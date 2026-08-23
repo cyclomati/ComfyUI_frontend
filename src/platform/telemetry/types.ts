@@ -896,6 +896,13 @@ export function getBillingTelemetryEventPayload(event: BillingTelemetryEvent) {
   }
 }
 
+export interface FetchTimeoutMetadata {
+  route: string
+  method: string
+  duration_ms: number
+  timeout_ms: number
+}
+
 /**
  * Telemetry provider interface for individual providers.
  * All methods are optional - providers only implement what they need.
@@ -1023,6 +1030,9 @@ export interface TelemetryProvider {
 
   // Page view tracking
   trackPageView?(pageName: string, properties?: PageViewMetadata): void
+
+  // Network error events
+  trackFetchTimeout?(metadata: FetchTimeoutMetadata): void
 }
 
 /**
@@ -1167,7 +1177,10 @@ export const TelemetryEvents = {
   NAMED_VALUES_SHADOW_DIFF_SUMMARY: 'app:named_values_shadow_diff_summary',
 
   // Page View
-  PAGE_VIEW: 'app:page_view'
+  PAGE_VIEW: 'app:page_view',
+
+  // Network
+  FETCH_TIMEOUT: 'app:fetch_timeout'
 } as const
 
 export type TelemetryEventName =
@@ -1258,3 +1271,4 @@ export type TelemetryEventProperties =
   | SubscriptionSuccessMetadata
   | WorkspaceInviteFailedMetadata
   | BillingTelemetryEvent
+  | FetchTimeoutMetadata
