@@ -33,6 +33,7 @@
     "class-variance-authority": "catalog:",
     "cva": "catalog:",
     "gsap": "catalog:",
+    "isomorphic-dompurify": "catalog:",
     "lenis": "catalog:",
     "parse5": "catalog:",
     "posthog-js": "catalog:",

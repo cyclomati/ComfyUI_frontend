@@ -1,3 +1,4 @@
+import { sanitize as sanitizeHtml } from 'isomorphic-dompurify'
 import { html, parseFragment } from 'parse5'
 import type { DefaultTreeAdapterTypes } from 'parse5'
 
@@ -114,5 +115,12 @@ function convertNode(
 }
 
 export function parseSafeRichText(htmlFragment: string): SafeRichTextNode[] {
-  return parseFragment(htmlFragment).childNodes.flatMap(convertNode)
+  const sanitizedHtml = sanitizeHtml(htmlFragment, {
+    ALLOWED_ATTR: ['class', 'href', 'rel', 'target'],
+    ALLOWED_TAGS: [...ALLOWED_TAGS],
+    ALLOW_ARIA_ATTR: false,
+    ALLOW_DATA_ATTR: false
+  })
+
+  return parseFragment(sanitizedHtml).childNodes.flatMap(convertNode)
 }
