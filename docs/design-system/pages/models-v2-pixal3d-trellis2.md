@@ -22,14 +22,16 @@ analytics, or error handling.
 | ------------------------------------------------------------ | ------------------------- | ------------------------------------------------------------------ |
 | Page shell, tabs, cards, auth preview, API and cost sections | Exact reuse               | Existing model-v2 preview                                          |
 | Image picker, drag target, attachment preview                | Approved variant          | Existing reference-image input                                     |
+| Persistent example-input picker                              | Approved variant          | Existing media-card and selected-state patterns                    |
 | Interactive GLB canvas                                       | Feature-local composition | Three.js and the product's established 3D-viewer interaction model |
 | Result JSON and download action                              | Approved variant          | Existing result card                                               |
 
 ## Workflow mapping
 
 - Exposed input: one PNG, JPG, or WebP image.
-- Default input: the workflow's `viking_wolf_rune_axe.png` example, which can be
-  replaced or removed.
+- Default input: the workflow's `viking_wolf_rune_axe.png` example.
+- Three persistent example inputs can be selected. Removing an input clears the
+  current selection without removing the example choices.
 - Output: textured GLB model.
 - Internal workflow details remain on the full graph and are not duplicated as
   playground controls.
@@ -38,8 +40,8 @@ analytics, or error handling.
 
 ## Media and data
 
-- The prefilled axe and gallery imagery come from Comfy's `workflow_templates`
-  repository.
+- The axe, robot, forest character, and gallery imagery come from Comfy's
+  `workflow_templates` repository.
 - The orbitable model is a web-optimized derivative of the supplied generated
   GLB. It provides an immediate input-to-result example and is also the preview
   download target.
@@ -57,8 +59,10 @@ analytics, or error handling.
 
 - The route starts with the workflow's axe input and its generated GLB result
   prefilled.
-- Removing the prefilled image requires the user to choose another image before
-  the preview run can proceed; reset restores the prefill.
+- Selecting an example updates the attachment and JSON input payload.
+- Removing the active image leaves all three example choices available and
+  requires the user to select or upload an image before running; reset restores
+  the axe prefill.
 - The uploaded filename appears in the JSON input payload.
 - Prompt, video duration, aspect ratio, resolution, and seed controls are absent.
 - The result is an orbitable, zoomable GLB viewer with a GLB download action.

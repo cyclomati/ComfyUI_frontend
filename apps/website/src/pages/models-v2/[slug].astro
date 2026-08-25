@@ -83,14 +83,34 @@ const promptExample = launch
   ? launch.promptExample
   : 'Golden hour drone shot pushing over a ridge line, fog pooling in the valley — native ambient audio.'
 const isImageTo3d = launch?.workflowKind === 'image-to-3d'
-const imageTo3dExample = isImageTo3d
-  ? {
-      name: 'viking_wolf_rune_axe.png',
-      imageUrl:
-        'https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/viking_wolf_rune_axe.png',
-      modelUrl:
-        '/assets/models-v2/pixal3d-trellis2/viking_wolf_rune_axe-preview.glb'
-    }
+const imageTo3dExamples = isImageTo3d
+  ? [
+      {
+        label: 'Viking axe',
+        name: 'viking_wolf_rune_axe.png',
+        imageUrl:
+          'https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/viking_wolf_rune_axe.png',
+        alt: 'Viking wolf rune axe example input'
+      },
+      {
+        label: 'Robot',
+        name: '3d_hunyuan3d-v2.1_input_image.png',
+        imageUrl:
+          'https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/3d_hunyuan3d-v2.1_input_image.png',
+        alt: 'Stylized robot example input'
+      },
+      {
+        label: 'Forest spirit',
+        name: 'api_rodin_image_to_model_input_image.png',
+        imageUrl:
+          'https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/api_rodin_image_to_model_input_image.png',
+        alt: 'Forest spirit character example input'
+      }
+    ]
+  : []
+const defaultImageTo3dExample = imageTo3dExamples[0]
+const imageTo3dModelUrl = isImageTo3d
+  ? '/assets/models-v2/pixal3d-trellis2/viking_wolf_rune_axe-preview.glb'
   : null
 const baseCredits = kind === 'partner api' ? 12 : 6
 const kindLabel = kind === 'open weights' ? 'Open weights' : 'Partner API'
@@ -399,23 +419,51 @@ const faqJsonLd = {
             <span class="text-xs font-light text-primary-warm-gray">or drag and drop PNG, JPG, or WebP</span>
           </div>
           {isImageTo3d && <p class:list={[helperCopy, 'mt-2']}>For the cleanest mesh, use one clearly visible object against a simple background.</p>}
+          {isImageTo3d && (
+            <div class="mt-4">
+              <span class={fieldLabel}>Or start with an example</span>
+              <div id="example-images" class="mt-2 grid grid-cols-3 gap-2">
+                {imageTo3dExamples.map((example, index) => (
+                  <button
+                    type="button"
+                    data-example-image
+                    data-example-name={example.name}
+                    data-example-url={example.imageUrl}
+                    data-example-alt={example.alt}
+                    data-selected={index === 0 ? '' : undefined}
+                    aria-label={`Use ${example.label} example`}
+                    aria-pressed={index === 0 ? 'true' : 'false'}
+                    class="group min-w-0 cursor-pointer rounded-xl border border-transparency-white-t20 bg-transparency-white-t4 p-1.5 text-left transition-colors hover:border-primary-comfy-yellow/40 hover:bg-transparency-white-t8 focus:border-primary-comfy-yellow/60 focus:outline-none data-[selected]:border-primary-comfy-yellow/60 data-[selected]:bg-transparency-white-t8"
+                  >
+                    <span class="block aspect-square overflow-hidden rounded-lg bg-transparency-white-t8">
+                      <img
+                        src={example.imageUrl}
+                        alt=""
+                        class="size-full object-cover transition-transform group-hover:scale-[1.02]"
+                        loading={index === 0 ? 'eager' : 'lazy'}
+                      />
+                    </span>
+                    <span class="block truncate px-1 pb-0.5 pt-2 text-2xs font-normal text-primary-comfy-canvas group-data-[selected]:text-primary-comfy-yellow">{example.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
           <p id="image-error" class="mt-2 hidden text-xs text-primary-comfy-orange" role="alert">Add an image before running the workflow.</p>
 
-          <!-- Attachment — the shared pattern's vertical form: a square media box,
-               the file below it, and the remove action over the media's corner. -->
-          <div id="ref-attachment" class:list={['relative mt-2 w-30 rounded-xl border border-transparency-white-t20 bg-transparency-white-t4 p-2', !imageTo3dExample && 'hidden']}>
+          <div id="ref-attachment" class:list={['relative mt-3 w-30 rounded-xl border border-transparency-white-t20 bg-transparency-white-t4 p-2', !defaultImageTo3dExample && 'hidden']}>
             <div class="aspect-square w-full overflow-hidden rounded-lg bg-transparency-white-t8">
               <img
                 id="ref-preview"
-                src={imageTo3dExample?.imageUrl}
-                alt={imageTo3dExample ? 'Prefilled example of a Viking wolf rune axe' : ''}
+                src={defaultImageTo3dExample?.imageUrl}
+                alt={defaultImageTo3dExample?.alt ?? ''}
                 class="aspect-square w-full object-cover"
                 onerror="this.style.display='none'"
               />
             </div>
             <div class="px-0.5 pt-2">
-              <p id="ref-name" class="truncate text-xs text-primary-comfy-canvas">{imageTo3dExample?.name}</p>
-              <p id="ref-meta" class="truncate text-2xs font-light text-primary-warm-gray">{imageTo3dExample && 'PNG · Prefilled example'}</p>
+              <p id="ref-name" class="truncate text-xs text-primary-comfy-canvas">{defaultImageTo3dExample?.name}</p>
+              <p id="ref-meta" class="truncate text-2xs font-light text-primary-warm-gray">{defaultImageTo3dExample && 'PNG · Example input'}</p>
             </div>
             <button id="ref-remove" type="button" title="Remove" aria-label="Remove" class="absolute right-3 top-3 z-20 cursor-pointer rounded-lg border border-transparency-white-t20 bg-primary-comfy-ink/80 p-1.5 text-primary-comfy-canvas backdrop-blur transition-colors hover:bg-primary-comfy-ink hover:text-primary-warm-white">
               <RemoveIcon class="size-3.5 shrink-0" aria-hidden="true" />
@@ -450,8 +498,9 @@ const faqJsonLd = {
               data-base-credits={baseCredits}
               data-slug={slugId}
               data-workflow-kind={isImageTo3d ? 'image-to-3d' : 'standard'}
-              data-default-image-name={imageTo3dExample?.name}
-              data-default-image-url={imageTo3dExample?.imageUrl}
+              data-default-image-name={defaultImageTo3dExample?.name}
+              data-default-image-url={defaultImageTo3dExample?.imageUrl}
+              data-default-image-alt={defaultImageTo3dExample?.alt}
               variant="solid"
               size="xs"
               class="uppercase tracking-widest"
@@ -475,7 +524,7 @@ const faqJsonLd = {
                 <div id="result-preview" class="relative h-full w-full bg-primary-comfy-ink-light">
                   <canvas
                     id="result-model-canvas"
-                    data-model-url={imageTo3dExample?.modelUrl}
+                    data-model-url={imageTo3dModelUrl}
                     aria-label={`${name} interactive 3D result. Drag to orbit and scroll to zoom.`}
                     class="h-full w-full cursor-grab touch-none active:cursor-grabbing"
                   ></canvas>
@@ -530,12 +579,12 @@ const faqJsonLd = {
         </div>
         <div id="result-meta" class="flex max-w-full flex-wrap items-center gap-2 pt-3">
           {isImageTo3d
-            ? <><span class:list={[pill, pillMuted]}>Textured GLB</span><span class:list={[pill, pillMuted]}>Interactive preview</span></>
+            ? <><span class:list={[pill, pillMuted]}>Textured GLB</span><span class:list={[pill, pillMuted]}>Viking axe example output</span></>
             : <><span id="result-seed" class:list={[pill, pillMuted]}>Seed {defaultSeed}</span><span class:list={[pill, pillMuted]}>4.2s render</span></>}
         </div>
         <div class="mt-auto flex justify-end pt-3">
           <div id="result-download" class="shrink-0">
-            <BrandButton id={isImageTo3d ? 'result-model-download' : undefined} href={imageTo3dExample?.modelUrl ?? img} download={`${slugId}-result${isImageTo3d ? '.glb' : ''}`} variant="outline" size="xs" class="uppercase tracking-widest">Download{isImageTo3d ? ' GLB' : ''}</BrandButton>
+            <BrandButton id={isImageTo3d ? 'result-model-download' : undefined} href={imageTo3dModelUrl ?? img} download={`${slugId}-result${isImageTo3d ? '.glb' : ''}`} variant="outline" size="xs" class="uppercase tracking-widest">Download{isImageTo3d ? ' GLB' : ''}</BrandButton>
           </div>
         </div>
         <!-- VARIATIONS QUEUE -->
@@ -892,6 +941,7 @@ const faqJsonLd = {
       const isImageTo3d = runDesktop.dataset.workflowKind === 'image-to-3d'
       const defaultImageName = runDesktop.dataset.defaultImageName ?? null
       const defaultImageUrl = runDesktop.dataset.defaultImageUrl ?? null
+      const defaultImageAlt = runDesktop.dataset.defaultImageAlt ?? ''
 
       // BrandButton wraps labels in a centering span — writing to the button
       // itself would strip it.
@@ -1020,6 +1070,9 @@ const faqJsonLd = {
       const refFile = $('ref-file') as HTMLInputElement
       const refPreview = $('ref-preview') as HTMLImageElement
       const dropzone = $('dropzone')!
+      const exampleButtons = [
+        ...document.querySelectorAll<HTMLElement>('[data-example-image]')
+      ]
       let previewUrl: string | null = null
 
       const fileSize = (bytes: number) =>
@@ -1030,6 +1083,31 @@ const faqJsonLd = {
       const fileKind = (file: File) =>
         (file.type.split('/')[1] || file.name.split('.').pop() || 'image').toUpperCase()
 
+      const setExampleSelection = (name: string | null) => {
+        for (const button of exampleButtons) {
+          const selected = button.dataset.exampleName === name
+          if (selected) button.dataset.selected = ''
+          else delete button.dataset.selected
+          button.setAttribute('aria-pressed', String(selected))
+        }
+      }
+
+      const selectExample = (name: string, url: string, alt: string) => {
+        if (previewUrl) URL.revokeObjectURL(previewUrl)
+        previewUrl = null
+        refFile.value = ''
+        refImage = name
+        refPreview.style.display = ''
+        refPreview.src = url
+        refPreview.alt = alt
+        $('ref-name')!.textContent = name
+        $('ref-meta')!.textContent = 'PNG · Example input'
+        $('ref-attachment')!.classList.remove('hidden')
+        $('image-error')?.classList.add('hidden')
+        setExampleSelection(name)
+        renderAll()
+      }
+
       const clearImage = () => {
         if (previewUrl) URL.revokeObjectURL(previewUrl)
         previewUrl = null
@@ -1038,28 +1116,24 @@ const faqJsonLd = {
         refPreview.removeAttribute('src')
         refPreview.alt = ''
         $('ref-attachment')!.classList.add('hidden')
+        setExampleSelection(null)
         renderAll()
       }
 
       const resetImage = () => {
-        if (previewUrl) URL.revokeObjectURL(previewUrl)
-        previewUrl = null
-        refFile.value = ''
-        refImage = defaultImageName
         if (defaultImageName && defaultImageUrl) {
-          refPreview.style.display = ''
-          refPreview.src = defaultImageUrl
-          refPreview.alt = 'Prefilled example of a Viking wolf rune axe'
-          $('ref-name')!.textContent = defaultImageName
-          $('ref-meta')!.textContent = 'PNG · Prefilled example'
-          $('ref-attachment')!.classList.remove('hidden')
-          $('image-error')?.classList.add('hidden')
+          selectExample(defaultImageName, defaultImageUrl, defaultImageAlt)
         } else {
+          if (previewUrl) URL.revokeObjectURL(previewUrl)
+          previewUrl = null
+          refFile.value = ''
+          refImage = null
           refPreview.removeAttribute('src')
           refPreview.alt = ''
           $('ref-attachment')!.classList.add('hidden')
+          setExampleSelection(null)
+          renderAll()
         }
-        renderAll()
       }
 
       const acceptImage = (file: File | undefined) => {
@@ -1074,7 +1148,21 @@ const faqJsonLd = {
         refImage = file.name
         $('ref-attachment')!.classList.remove('hidden')
         $('image-error')?.classList.add('hidden')
+        setExampleSelection(null)
         renderAll()
+      }
+
+      for (const button of exampleButtons) {
+        button.addEventListener('click', () => {
+          const exampleName = button.dataset.exampleName
+          const exampleUrl = button.dataset.exampleUrl
+          if (!exampleName || !exampleUrl) return
+          selectExample(
+            exampleName,
+            exampleUrl,
+            button.dataset.exampleAlt ?? ''
+          )
+        })
       }
 
       $('add-image-btn')?.addEventListener('click', () => refFile.click())

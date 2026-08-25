@@ -250,6 +250,15 @@ const run = async () => {
   )
   const prefilledImage = desktop.locator('#ref-preview')
   await prefilledImage.waitFor({ state: 'visible' })
+  const exampleImages = desktop.locator('[data-example-image]')
+  check(
+    'image-to-3d offers persistent examples',
+    (await exampleImages.count()) === 3 &&
+      (await desktop
+        .locator('[data-example-image][aria-pressed="true"]')
+        .count()) === 1,
+    `${await exampleImages.count()} examples`
+  )
   await desktop.click('[data-iview="json"]')
   const prefilledPayload = (await desktop.textContent('#input-json')) ?? ''
   check(
@@ -261,7 +270,31 @@ const run = async () => {
     ''
   )
   await desktop.click('[data-iview="app"]')
+  await desktop.click('[data-example-name="3d_hunyuan3d-v2.1_input_image.png"]')
+  await desktop.click('[data-iview="json"]')
+  check(
+    'image-to-3d example selection updates the input',
+    (await desktop.textContent('#ref-name')) ===
+      '3d_hunyuan3d-v2.1_input_image.png' &&
+      ((await desktop.textContent('#input-json')) ?? '').includes(
+        '"image": "3d_hunyuan3d-v2.1_input_image.png"'
+      ),
+    ''
+  )
+  await desktop.click('[data-iview="app"]')
   await desktop.click('#ref-remove')
+  check(
+    'remove preserves the example choices',
+    (await exampleImages.count()) === 3 &&
+      (await exampleImages.evaluateAll(
+        (elements) =>
+          elements.filter((element) => element.checkVisibility()).length
+      )) === 3 &&
+      (await desktop
+        .locator('[data-example-image][aria-pressed="true"]')
+        .count()) === 0,
+    ''
+  )
   await desktop.click('#pg-run')
   check(
     'image-to-3d requires an image after removing the example',
