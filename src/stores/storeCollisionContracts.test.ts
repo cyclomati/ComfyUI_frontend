@@ -256,13 +256,24 @@ describe('store collision contracts (identity keys reject, structural keys resol
       ).toHaveLength(1)
     })
 
-    // Pending #15720 (D-dq-04 bundle): the remint loop in attachNodeToStores
-    // gains a console.warn naming the collided id, the reminted id, AND
-    // graph.rootGraph.id, so a silent remint cannot strand serialized
-    // references (links keyed on the old id) without a trace. Activate this
-    // test when #15720 lands.
-    it.todo(
-      'a collision remint warns with both ids and the root graph id (#15720)'
-    )
+    it('warns with the collided id, reminted id, and root graph id', () => {
+      const graph = new LGraph()
+      const incumbent = new LGraphNode('Incumbent')
+      graph.add(incumbent)
+      const collidedId = incumbent.id
+      const newcomer = new LGraphNode('Newcomer')
+      newcomer.id = collidedId
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+      graph.add(newcomer)
+
+      expect(newcomer.id).not.toBe(collidedId)
+      expect(warn).toHaveBeenCalledOnce()
+      expect(warn.mock.calls[0][0]).toContain(`Node id ${collidedId} `)
+      expect(warn.mock.calls[0][0]).toContain(`reminted as ${newcomer.id}`)
+      expect(warn.mock.calls[0][0]).toContain(
+        `root graph ${graph.rootGraph.id}`
+      )
+    })
   })
 })
