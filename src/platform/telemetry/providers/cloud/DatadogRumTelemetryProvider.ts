@@ -4,6 +4,7 @@ import { datadogRum } from '@datadog/browser-rum'
 import type {
   BillingTelemetryEvent,
   ExecutionOutcomeMetadata,
+  FetchTimeoutMetadata,
   TelemetryProvider,
   UnifiedAuthRetryMetadata
 } from '../../types'
@@ -14,6 +15,10 @@ import {
 } from '../../types'
 
 export class DatadogRumTelemetryProvider implements TelemetryProvider {
+  trackFetchTimeout(metadata: FetchTimeoutMetadata): void {
+    datadogRum.addAction(TelemetryEvents.FETCH_TIMEOUT, metadata)
+  }
+
   trackUnifiedAuthRetry(metadata: UnifiedAuthRetryMetadata): void {
     datadogRum.addAction(
       metadata.outcome === 'succeeded'
