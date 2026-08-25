@@ -28,6 +28,8 @@ analytics, or error handling.
 ## Workflow mapping
 
 - Exposed input: one PNG, JPG, or WebP image.
+- Default input: the workflow's `viking_wolf_rune_axe.png` example, which can be
+  replaced or removed.
 - Output: textured GLB model.
 - Internal workflow details remain on the full graph and are not duplicated as
   playground controls.
@@ -36,10 +38,11 @@ analytics, or error handling.
 
 ## Media and data
 
-- Example imagery comes from Comfy's `workflow_templates` repository.
-- The orbitable model is a procedural placeholder mesh exported to GLB in the
-  browser. It proves viewer and download behavior without claiming to be a real
-  inference result.
+- The prefilled axe and gallery imagery come from Comfy's `workflow_templates`
+  repository.
+- The orbitable model is a web-optimized derivative of the supplied generated
+  GLB. It provides an immediate input-to-result example and is also the preview
+  download target.
 - Uploaded images remain in the browser and are represented by filename in the
   preview payload. They are not transmitted.
 
@@ -52,7 +55,10 @@ analytics, or error handling.
 
 ## Acceptance gates
 
-- The route requires an image before the preview run can proceed.
+- The route starts with the workflow's axe input and its generated GLB result
+  prefilled.
+- Removing the prefilled image requires the user to choose another image before
+  the preview run can proceed; reset restores the prefill.
 - The uploaded filename appears in the JSON input payload.
 - Prompt, video duration, aspect ratio, resolution, and seed controls are absent.
 - The result is an orbitable, zoomable GLB viewer with a GLB download action.

@@ -83,6 +83,15 @@ const promptExample = launch
   ? launch.promptExample
   : 'Golden hour drone shot pushing over a ridge line, fog pooling in the valley — native ambient audio.'
 const isImageTo3d = launch?.workflowKind === 'image-to-3d'
+const imageTo3dExample = isImageTo3d
+  ? {
+      name: 'viking_wolf_rune_axe.png',
+      imageUrl:
+        'https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/viking_wolf_rune_axe.png',
+      modelUrl:
+        '/assets/models-v2/pixal3d-trellis2/viking_wolf_rune_axe-preview.glb'
+    }
+  : null
 const baseCredits = kind === 'partner api' ? 12 : 6
 const kindLabel = kind === 'open weights' ? 'Open weights' : 'Partner API'
 const sentence = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
@@ -394,13 +403,19 @@ const faqJsonLd = {
 
           <!-- Attachment — the shared pattern's vertical form: a square media box,
                the file below it, and the remove action over the media's corner. -->
-          <div id="ref-attachment" class="relative mt-2 hidden w-30 rounded-xl border border-transparency-white-t20 bg-transparency-white-t4 p-2">
+          <div id="ref-attachment" class:list={['relative mt-2 w-30 rounded-xl border border-transparency-white-t20 bg-transparency-white-t4 p-2', !imageTo3dExample && 'hidden']}>
             <div class="aspect-square w-full overflow-hidden rounded-lg bg-transparency-white-t8">
-              <img id="ref-preview" alt="" class="aspect-square w-full object-cover" onerror="this.style.display='none'" />
+              <img
+                id="ref-preview"
+                src={imageTo3dExample?.imageUrl}
+                alt={imageTo3dExample ? 'Prefilled example of a Viking wolf rune axe' : ''}
+                class="aspect-square w-full object-cover"
+                onerror="this.style.display='none'"
+              />
             </div>
             <div class="px-0.5 pt-2">
-              <p id="ref-name" class="truncate text-xs text-primary-comfy-canvas"></p>
-              <p id="ref-meta" class="truncate text-2xs font-light text-primary-warm-gray"></p>
+              <p id="ref-name" class="truncate text-xs text-primary-comfy-canvas">{imageTo3dExample?.name}</p>
+              <p id="ref-meta" class="truncate text-2xs font-light text-primary-warm-gray">{imageTo3dExample && 'PNG · Prefilled example'}</p>
             </div>
             <button id="ref-remove" type="button" title="Remove" aria-label="Remove" class="absolute right-3 top-3 z-20 cursor-pointer rounded-lg border border-transparency-white-t20 bg-primary-comfy-ink/80 p-1.5 text-primary-comfy-canvas backdrop-blur transition-colors hover:bg-primary-comfy-ink hover:text-primary-warm-white">
               <RemoveIcon class="size-3.5 shrink-0" aria-hidden="true" />
@@ -430,7 +445,17 @@ const faqJsonLd = {
           </span>
           <div class="flex items-center gap-3">
             <BrandButton id="pg-reset" variant="outline" size="xs" class="uppercase tracking-widest">Reset</BrandButton>
-            <BrandButton id="pg-run" data-base-credits={baseCredits} data-slug={slugId} data-workflow-kind={isImageTo3d ? 'image-to-3d' : 'standard'} variant="solid" size="xs" class="uppercase tracking-widest">Sign in to run — 5 free</BrandButton>
+            <BrandButton
+              id="pg-run"
+              data-base-credits={baseCredits}
+              data-slug={slugId}
+              data-workflow-kind={isImageTo3d ? 'image-to-3d' : 'standard'}
+              data-default-image-name={imageTo3dExample?.name}
+              data-default-image-url={imageTo3dExample?.imageUrl}
+              variant="solid"
+              size="xs"
+              class="uppercase tracking-widest"
+            >Sign in to run — 5 free</BrandButton>
           </div>
         </div>
       </div>
@@ -450,6 +475,7 @@ const faqJsonLd = {
                 <div id="result-preview" class="relative h-full w-full bg-primary-comfy-ink-light">
                   <canvas
                     id="result-model-canvas"
+                    data-model-url={imageTo3dExample?.modelUrl}
                     aria-label={`${name} interactive 3D result. Drag to orbit and scroll to zoom.`}
                     class="h-full w-full cursor-grab touch-none active:cursor-grabbing"
                   ></canvas>
@@ -509,7 +535,7 @@ const faqJsonLd = {
         </div>
         <div class="mt-auto flex justify-end pt-3">
           <div id="result-download" class="shrink-0">
-            <BrandButton id={isImageTo3d ? 'result-model-download' : undefined} href={isImageTo3d ? '#' : img} download={`${slugId}-result${isImageTo3d ? '.glb' : ''}`} variant="outline" size="xs" class="uppercase tracking-widest">Download{isImageTo3d ? ' GLB' : ''}</BrandButton>
+            <BrandButton id={isImageTo3d ? 'result-model-download' : undefined} href={imageTo3dExample?.modelUrl ?? img} download={`${slugId}-result${isImageTo3d ? '.glb' : ''}`} variant="outline" size="xs" class="uppercase tracking-widest">Download{isImageTo3d ? ' GLB' : ''}</BrandButton>
           </div>
         </div>
         <!-- VARIATIONS QUEUE -->
@@ -722,15 +748,14 @@ const faqJsonLd = {
       canvas.dataset.bound = '1'
 
       const status = document.getElementById('model-viewer-status')
-      const download = document.getElementById(
-        'result-model-download'
-      ) as HTMLAnchorElement | null
+      const modelUrl = canvas.dataset.modelUrl
+      if (!modelUrl) return
 
       try {
-        const [THREE, { OrbitControls }, { GLTFExporter }] = await Promise.all([
+        const [THREE, { OrbitControls }, { GLTFLoader }] = await Promise.all([
           import('three'),
           import('three/examples/jsm/controls/OrbitControls.js'),
-          import('three/examples/jsm/exporters/GLTFExporter.js')
+          import('three/examples/jsm/loaders/GLTFLoader.js')
         ])
         if (!canvas.isConnected) return
 
@@ -741,6 +766,8 @@ const faqJsonLd = {
         })
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
         renderer.outputColorSpace = THREE.SRGBColorSpace
+        renderer.toneMapping = THREE.ACESFilmicToneMapping
+        renderer.toneMappingExposure = 1.35
 
         const scene = new THREE.Scene()
         const camera = new THREE.PerspectiveCamera(35, 1, 0.01, 1000)
@@ -749,44 +776,30 @@ const faqJsonLd = {
         controls.autoRotate = true
         controls.autoRotateSpeed = 1
 
-        scene.add(new THREE.HemisphereLight(0xffffff, 0x555555, 2.5))
-        const keyLight = new THREE.DirectionalLight(0xffffff, 3)
+        scene.add(new THREE.HemisphereLight(0xffffff, 0x555555, 3.5))
+        const keyLight = new THREE.DirectionalLight(0xffffff, 4.5)
         keyLight.position.set(4, 6, 5)
         scene.add(keyLight)
+        const fillLight = new THREE.DirectionalLight(0xffffff, 2)
+        fillLight.position.set(-4, 2, -3)
+        scene.add(fillLight)
 
-        const geometry = new THREE.IcosahedronGeometry(1, 3)
-        const material = new THREE.MeshStandardMaterial({
-          color: 0x88c5b3,
-          metalness: 0.08,
-          roughness: 0.7
-        })
-        const model = new THREE.Group()
-        const mesh = new THREE.Mesh(geometry, material)
-        mesh.rotation.set(-0.18, 0.32, 0.08)
-        mesh.scale.set(0.82, 1.15, 0.72)
-        model.add(mesh)
+        const { scene: model } = await new GLTFLoader().loadAsync(modelUrl)
 
         const bounds = new THREE.Box3().setFromObject(model)
         const size = bounds.getSize(new THREE.Vector3())
         const center = bounds.getCenter(new THREE.Vector3())
-        const diameter = Math.max(size.x, size.y, size.z, 1)
+        const diameter = Math.max(size.x, size.y, size.z)
         model.position.sub(center)
         scene.add(model)
 
-        let downloadUrl: string | undefined
-        const exportedModel = await new GLTFExporter().parseAsync(model, {
-          binary: true
-        })
-        if (exportedModel instanceof ArrayBuffer && download) {
-          downloadUrl = URL.createObjectURL(
-            new Blob([exportedModel], { type: 'model/gltf-binary' })
-          )
-          download.href = downloadUrl
-        }
-
         camera.near = diameter / 100
         camera.far = diameter * 100
-        camera.position.set(diameter * 1.5, diameter, diameter * 1.8)
+        camera.position.set(
+          diameter * 1.15,
+          diameter * 0.75,
+          diameter * 1.35
+        )
         camera.updateProjectionMatrix()
         controls.target.set(0, 0, 0)
         controls.update()
@@ -818,10 +831,15 @@ const faqJsonLd = {
             cancelAnimationFrame(frame)
             resizeObserver.disconnect()
             controls.dispose()
-            geometry.dispose()
-            material.dispose()
+            model.traverse((object) => {
+              if (!(object instanceof THREE.Mesh)) return
+              object.geometry.dispose()
+              const materials = Array.isArray(object.material)
+                ? object.material
+                : [object.material]
+              materials.forEach((material) => material.dispose())
+            })
             renderer.dispose()
-            if (downloadUrl) URL.revokeObjectURL(downloadUrl)
           },
           { once: true }
         )
@@ -872,6 +890,8 @@ const faqJsonLd = {
       const base = Number(runDesktop.dataset.baseCredits ?? '6')
       const slug = runDesktop.dataset.slug ?? 'model'
       const isImageTo3d = runDesktop.dataset.workflowKind === 'image-to-3d'
+      const defaultImageName = runDesktop.dataset.defaultImageName ?? null
+      const defaultImageUrl = runDesktop.dataset.defaultImageUrl ?? null
 
       // BrandButton wraps labels in a centering span — writing to the button
       // itself would strip it.
@@ -885,7 +905,7 @@ const faqJsonLd = {
 
       let authed = false
       let runsLeft = 5
-      let refImage: string | null = null
+      let refImage: string | null = defaultImageName
       let lastRun: Record<string, unknown> | null = null
 
       const mult = (sel: HTMLSelectElement | null) =>
@@ -1015,7 +1035,30 @@ const faqJsonLd = {
         previewUrl = null
         refImage = null
         refFile.value = ''
+        refPreview.removeAttribute('src')
+        refPreview.alt = ''
         $('ref-attachment')!.classList.add('hidden')
+        renderAll()
+      }
+
+      const resetImage = () => {
+        if (previewUrl) URL.revokeObjectURL(previewUrl)
+        previewUrl = null
+        refFile.value = ''
+        refImage = defaultImageName
+        if (defaultImageName && defaultImageUrl) {
+          refPreview.style.display = ''
+          refPreview.src = defaultImageUrl
+          refPreview.alt = 'Prefilled example of a Viking wolf rune axe'
+          $('ref-name')!.textContent = defaultImageName
+          $('ref-meta')!.textContent = 'PNG · Prefilled example'
+          $('ref-attachment')!.classList.remove('hidden')
+          $('image-error')?.classList.add('hidden')
+        } else {
+          refPreview.removeAttribute('src')
+          refPreview.alt = ''
+          $('ref-attachment')!.classList.add('hidden')
+        }
         renderAll()
       }
 
@@ -1025,6 +1068,7 @@ const faqJsonLd = {
         previewUrl = URL.createObjectURL(file)
         refPreview.style.display = ''
         refPreview.src = previewUrl
+        refPreview.alt = `Uploaded preview of ${file.name}`
         $('ref-name')!.textContent = file.name
         $('ref-meta')!.textContent = `${fileKind(file)} · ${fileSize(file.size)}`
         refImage = file.name
@@ -1044,6 +1088,7 @@ const faqJsonLd = {
       })
       refFile.addEventListener('change', () => acceptImage(refFile.files?.[0]))
       $('ref-remove')?.addEventListener('click', clearImage)
+      $('pg-reset')?.addEventListener('click', resetImage)
 
       // The drop zone lights up while a file is over it, not on plain hover.
       for (const type of ['dragenter', 'dragover']) {
@@ -1197,7 +1242,7 @@ const faqJsonLd = {
       })
       $('demo-reset')!.addEventListener('click', () => {
         authed = false; runsLeft = 5; lastRun = null
-        clearImage()
+        resetImage()
         if (seedInput) seedInput.value = defaultSeed
         upgrade.classList.add('hidden'); upgrade.classList.remove('flex')
         strip.classList.add('hidden'); strip.classList.remove('flex')

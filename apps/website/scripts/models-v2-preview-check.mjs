@@ -248,9 +248,23 @@ const run = async () => {
       (await desktop.locator('#pg-seed').count()) === 0,
     ''
   )
+  const prefilledImage = desktop.locator('#ref-preview')
+  await prefilledImage.waitFor({ state: 'visible' })
+  await desktop.click('[data-iview="json"]')
+  const prefilledPayload = (await desktop.textContent('#input-json')) ?? ''
+  check(
+    'image-to-3d prefilled example',
+    (await prefilledImage.getAttribute('src'))?.includes(
+      '/input/viking_wolf_rune_axe.png'
+    ) === true &&
+      prefilledPayload.includes('"image": "viking_wolf_rune_axe.png"'),
+    ''
+  )
+  await desktop.click('[data-iview="app"]')
+  await desktop.click('#ref-remove')
   await desktop.click('#pg-run')
   check(
-    'image-to-3d requires an image',
+    'image-to-3d requires an image after removing the example',
     await desktop.isVisible('#image-error'),
     ''
   )
@@ -268,6 +282,13 @@ const run = async () => {
     ''
   )
   await desktop.click('[data-iview="app"]')
+  await desktop.click('#pg-reset')
+  check(
+    'image-to-3d reset restores the example',
+    (await desktop.textContent('#ref-name')) === 'viking_wolf_rune_axe.png' &&
+      (await desktop.isVisible('#ref-attachment')),
+    ''
+  )
   const modelDownload = await desktop.$eval(
     '#result-model-download',
     async (link) => {
