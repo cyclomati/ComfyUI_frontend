@@ -899,7 +899,6 @@ export function getBillingTelemetryEventPayload(event: BillingTelemetryEvent) {
 export interface FetchTimeoutMetadata {
   route: string
   method: string
-  duration_ms: number
   timeout_ms: number
 }
 
