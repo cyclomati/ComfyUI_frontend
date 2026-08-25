@@ -6,7 +6,7 @@ import { expect, it } from 'vitest'
 import BrandAssetsGrid01 from './BrandAssetsGrid01.vue'
 
 it('renders the subheading through the safe rich text boundary', () => {
-  render(BrandAssetsGrid01, {
+  const { container } = render(BrandAssetsGrid01, {
     props: {
       heading: 'Brand assets',
       subheading:
@@ -18,5 +18,5 @@ it('renders the subheading through the safe rich text boundary', () => {
 
   const link = screen.getByRole('link', { name: 'approved assets' })
   expect(link.getAttribute('href')).toBe('/terms')
-  expect(screen.queryByText('alert(1)')).toBeNull()
+  expect(container.querySelector('script')).toBeNull()
 })
