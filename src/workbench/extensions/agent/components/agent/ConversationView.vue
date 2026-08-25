@@ -20,6 +20,8 @@ const { entries, editableTurnId = null } = defineProps<{
 const emit = defineEmits<{
   feedback: [turnId: string, vote: 'up' | 'down' | null]
   editPrompt: [text: string]
+  addCredits: []
+  upgradeSubscription: []
 }>()
 
 const { t } = useI18n()
@@ -87,6 +89,8 @@ watch(
               v-else
               :message="entry"
               @feedback="emit('feedback', entry.id, $event)"
+              @add-credits="emit('addCredits')"
+              @upgrade-subscription="emit('upgradeSubscription')"
             />
           </template>
           <div ref="bottom" />

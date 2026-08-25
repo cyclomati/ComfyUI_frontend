@@ -75,6 +75,8 @@ const emit = defineEmits<{
   focusTag: [id: string]
   mentionPick: [node: SelectedNode]
   feedback: [turnId: string, vote: 'up' | 'down' | null]
+  addCredits: []
+  upgradeSubscription: []
   selectTab: [path: string]
   clearWorkflow: []
   newChat: []
@@ -288,6 +290,8 @@ defineExpose({ addAttachment, updateAttachment, removeAttachment })
           :editable-turn-id="editableTurnId"
           @edit-prompt="composerRef?.replaceDraft($event)"
           @feedback="(id, vote) => emit('feedback', id, vote)"
+          @add-credits="emit('addCredits')"
+          @upgrade-subscription="emit('upgradeSubscription')"
         />
       </div>
     </template>

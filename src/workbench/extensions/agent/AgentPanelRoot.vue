@@ -45,6 +45,7 @@ import { useWorkflowTabActivityStore } from '@/stores/workflowTabActivityStore'
 import { useSidebarTabStore } from '@/stores/workspace/sidebarTabStore'
 import { isLGraphNode } from '@/utils/litegraphUtil'
 import { useToastStore } from '@/platform/updates/common/toastStore'
+import { useAccountPreconditionDialog } from '@/platform/cloud/subscription/composables/useAccountPreconditionDialog'
 
 import AgentPanel from './components/agent/AgentPanel.vue'
 import OnboardingCoach from './components/agent/OnboardingCoach.vue'
@@ -87,6 +88,7 @@ import { useAgentCrdtFollower } from './crdt/useAgentCrdtFollower'
 
 const { t } = useI18n()
 const toast = useToastStore()
+const { open: openAccountPrecondition } = useAccountPreconditionDialog()
 const sidebarTabStore = useSidebarTabStore()
 const { isBuilderMode } = useAppMode()
 
@@ -1224,6 +1226,8 @@ function onPanelDrop(event: DragEvent): void {
       @focus-tag="onFocusSelectionTag"
       @mention-pick="onMentionPick"
       @feedback="onFeedback"
+      @add-credits="openAccountPrecondition('credits')"
+      @upgrade-subscription="openAccountPrecondition('subscription')"
       @new-chat="onNewChat"
       @toggle-size="agentPanelStore.toggleMaximize()"
       @close="onClosePanel"
