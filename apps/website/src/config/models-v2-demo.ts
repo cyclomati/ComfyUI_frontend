@@ -39,6 +39,7 @@ export interface LaunchModel {
   launchUrl?: string
   workflowsUrl: string
   promptExample: string
+  workflowKind?: 'image-to-3d'
 }
 
 export const modalityMeta: Record<Modality, { label: string; color: string }> =
@@ -57,6 +58,28 @@ const t = (n: string) => proxyImg(`${TPL}/${n}`, 800)
 // Ordered: measured CVR leaders first (flux-3 15.6%, minimax-h3 9.9%,
 // wan launches 8–9%), then day-zero freshness.
 export const launches: LaunchModel[] = [
+  {
+    slug: 'pixal3d-trellis2',
+    name: 'Pixal3D + TRELLIS.2',
+    publisher: 'Comfy Org',
+    blurb:
+      'Turn a single image into a textured 3D model you can inspect, download, and continue refining on the graph.',
+    modality: '3d',
+    kind: 'open weights',
+    img: t('3d_pixal3d_trellis2_image_to_model-1.webp'),
+    gallery: [
+      t('3d_pixal3d_trellis2_image_to_model-1.webp'),
+      t('3d_hunyuan3d_image_to_model-1.webp'),
+      t('3d_triposplat_image_to_gaussian_splat-1.webp')
+    ],
+    runs: 'Image to textured mesh',
+    price: 'credit estimate before run',
+    workflowsUrl:
+      'https://raw.githubusercontent.com/Comfy-Org/workflow_templates/main/templates/3d_pixal3d_trellis2_image_to_model.json',
+    promptExample:
+      'Upload one clear image with a single subject and a simple background.',
+    workflowKind: 'image-to-3d'
+  },
   {
     slug: 'flux-3',
     name: 'FLUX 3',

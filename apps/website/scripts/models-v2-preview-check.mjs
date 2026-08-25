@@ -237,6 +237,64 @@ const run = async () => {
     ''
   )
 
+  // ---------- IMAGE TO 3D ----------
+  await desktop.goto(`${BASE}/models-v2/pixal3d-trellis2`, {
+    waitUntil: 'networkidle'
+  })
+  check(
+    'image-to-3d exposes only image input',
+    (await desktop.locator('#ref-file').count()) === 1 &&
+      (await desktop.locator('#pg-prompt').count()) === 0 &&
+      (await desktop.locator('#pg-seed').count()) === 0,
+    ''
+  )
+  await desktop.click('#pg-run')
+  check(
+    'image-to-3d requires an image',
+    await desktop.isVisible('#image-error'),
+    ''
+  )
+  await desktop.setInputFiles('#ref-file', {
+    name: 'subject.webp',
+    mimeType: 'image/webp',
+    buffer: Buffer.from('524946460000000057454250', 'hex')
+  })
+  await desktop.click('[data-iview="json"]')
+  const imagePayload = (await desktop.textContent('#input-json')) ?? ''
+  check(
+    'image-to-3d payload',
+    imagePayload.includes('"image": "subject.webp"') &&
+      imagePayload.includes('"output_format": "glb"'),
+    ''
+  )
+  await desktop.click('[data-iview="app"]')
+  const modelDownload = await desktop.$eval(
+    '#result-model-download',
+    async (link) => {
+      const bytes = new Uint8Array(await (await fetch(link.href)).arrayBuffer())
+      return {
+        header: String.fromCharCode(...bytes.slice(0, 4)),
+        size: bytes.byteLength
+      }
+    }
+  )
+  check(
+    'interactive 3d result',
+    (await desktop.isVisible('#result-model-canvas')) &&
+      modelDownload.header === 'glTF' &&
+      modelDownload.size > 100,
+    `${modelDownload.header} · ${modelDownload.size} bytes`
+  )
+  const imageTo3dMd = await desktop.request.get(
+    `${BASE}/models-v2/pixal3d-trellis2.md`
+  )
+  check(
+    'image-to-3d markdown twin',
+    imageTo3dMd.status() === 200 &&
+      (await imageTo3dMd.text()).includes('- Output: textured GLB model'),
+    ''
+  )
+
   // ---------- MOBILE ----------
   const mobile = await (
     await browser.newContext({

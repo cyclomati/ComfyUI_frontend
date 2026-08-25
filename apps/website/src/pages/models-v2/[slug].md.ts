@@ -3,14 +3,8 @@
 // Delete with the preview pages.
 import type { APIRoute } from 'astro'
 
-import {
-  launches,
-  registryModels,
-  topPartnerApis,
-  modalityMeta,
-  dirLabel,
-  type LaunchModel
-} from '../../config/models-v2-demo'
+import { launches, registryModels, topPartnerApis, modalityMeta, dirLabel } from '../../config/models-v2-demo';
+import type { LaunchModel } from '../../config/models-v2-demo';
 
 const launchLike = [
   ...launches,
@@ -54,6 +48,7 @@ export const GET: APIRoute = ({ props, params, site }) => {
       ? 'partner api'
       : 'open weights'
   const modality = launch ? launch.modality : 'image'
+  const isImageTo3d = launch?.workflowKind === 'image-to-3d'
   const baseCredits = kind === 'partner api' ? 12 : 6
   const base = site ?? 'https://comfy.org'
   const pageUrl = new URL(`/models-v2/${params.slug}`, base).href
@@ -69,7 +64,10 @@ export const GET: APIRoute = ({ props, params, site }) => {
     '',
     `- Type: ${modalityMeta[modality].label}`,
     `- License: ${kind}`,
-    `- Price: ~${baseCredits} credits per run (≈ $${(baseCredits * 0.0084).toFixed(2)}, estimate; 1080p or 10s doubles it)`,
+    `- Price: ~${baseCredits} credits per run (≈ $${(baseCredits * 0.0084).toFixed(2)}, estimate${isImageTo3d ? '' : '; 1080p or 10s doubles it'})`,
+    ...(isImageTo3d
+      ? ['- Input: one image', '- Output: textured GLB model']
+      : []),
     ...(registry
       ? [`- Workflow templates using it: ${registry.workflowCount}`]
       : []),
@@ -89,7 +87,7 @@ export const GET: APIRoute = ({ props, params, site }) => {
     '```bash',
     'curl -X POST https://api.comfy.org/v1/run \\',
     '  -H "Authorization: Bearer $COMFY_KEY" \\',
-    `  -d '{ "workflow": "${slugId}", "prompt": "…" }'`,
+    `  -d '{ "workflow": "${slugId}", ${isImageTo3d ? '"image": "subject.png"' : '"prompt": "…"'} }'`,
     '```',
     '',
     `Full catalog: ${new URL('/models-v2/llms.txt', base).href}`
