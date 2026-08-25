@@ -104,6 +104,7 @@ export type RemoteConfig = {
   onboarding_survey_enabled?: boolean
   onboarding_survey?: OnboardingSurvey
   onboarding_tour_enabled?: boolean
+  strict_extension_rich_text_enabled?: boolean
   /** Full hosted (external) survey URL embedded in the Nodes Manager modal on Cloud. */
   manager_survey_url?: string
   linear_toggle_enabled?: boolean

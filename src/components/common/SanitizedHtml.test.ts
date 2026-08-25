@@ -9,9 +9,9 @@ import { renderMarkdownToHtml } from '@/utils/markdownRendererUtil'
 
 import SanitizedHtml from './SanitizedHtml.vue'
 
-const renderHtml = (html: string) =>
+const renderHtml = (html: string, compatibilityMode = false) =>
   render(SanitizedHtml, {
-    props: { as: 'span', html },
+    props: { as: 'span', compatibilityMode, html },
     attrs: { 'data-testid': 'sanitized-html' }
   })
 
@@ -46,6 +46,40 @@ describe('SanitizedHtml', () => {
       screen.getByRole('img', { name: 'unsafe image' })
     ).not.toHaveAttribute('onerror')
     expect(screen.queryByText('alert(1)')).not.toBeInTheDocument()
+  })
+
+  describe('extension compatibility rollout', () => {
+    afterEach(() => {
+      localStorage.removeItem('ff:strict_extension_rich_text_enabled')
+    })
+
+    it('preserves safe presentation metadata while removing executable content', () => {
+      renderHtml(
+        '<div class="extension-callout" style="color: red">Safe</div><a href="https://example.com" target="_blank">Link</a><script>alert(1)</script>',
+        true
+      )
+
+      expect(screen.getByText('Safe')).toHaveAttribute(
+        'class',
+        'extension-callout'
+      )
+      expect(screen.getByText('Safe')).toHaveAttribute('style', 'color: red')
+      expect(screen.queryByText('alert(1)')).not.toBeInTheDocument()
+      expect(screen.getByRole('link', { name: 'Link' })).toHaveAttribute(
+        'rel',
+        'noopener noreferrer'
+      )
+    })
+
+    it('enables the strict policy through the rollout flag', () => {
+      localStorage.setItem('ff:strict_extension_rich_text_enabled', 'true')
+      renderHtml(
+        '<div class="extension-callout" style="color: red">Safe</div>',
+        true
+      )
+
+      expect(screen.getByText('Safe').getAttributeNames()).toEqual([])
+    })
   })
 
   describe('tag allowlist', () => {

@@ -6,6 +6,8 @@
 import { default as createDOMPurify } from 'dompurify'
 import { computed, defineComponent, h } from 'vue'
 
+import { useFeatureFlags } from '@/composables/useFeatureFlags'
+
 // Isolated instance: the shared singleton is mutated at import time by
 // litegraph's ContextMenu, so the posture here would otherwise depend on
 // module import order.
@@ -16,10 +18,20 @@ defineOptions({ inheritAttrs: false })
 const SAFE_CONTAINER_TAGS = ['div', 'span'] as const
 type SafeContainerTag = (typeof SAFE_CONTAINER_TAGS)[number]
 
-const { html, as = 'div' } = defineProps<{
+const {
+  html,
+  as = 'div',
+  compatibilityMode = false
+} = defineProps<{
   html: string
   as?: SafeContainerTag
+  compatibilityMode?: boolean
 }>()
+
+const { flags } = useFeatureFlags()
+const useStrictPolicy = computed(
+  () => !compatibilityMode || flags.strictExtensionRichTextEnabled
+)
 
 const ALLOWED_TAGS = [
   'a',
@@ -170,15 +182,56 @@ const ALLOWED_ATTR = [
   'type',
   'value'
 ]
+const COMPATIBILITY_ADD_TAGS = ['video', 'source']
+const COMPATIBILITY_ADD_ATTR = [
+  'controls',
+  'autoplay',
+  'loop',
+  'muted',
+  'preload',
+  'poster',
+  'target',
+  'rel'
+]
+
+function hardenTargets(fragment: DocumentFragment) {
+  for (const element of fragment.querySelectorAll('[target]')) {
+    const rel = new Set((element.getAttribute('rel') ?? '').split(/\s+/))
+    rel.delete('')
+    rel.add('noopener')
+    rel.add('noreferrer')
+    element.setAttribute('rel', [...rel].join(' '))
+  }
+}
+
+function serializeFragment(fragment: DocumentFragment): string {
+  const container = document.createElement('div')
+  container.append(fragment)
+  return container.innerHTML
+}
 
 const sanitizedHtml = computed(() => {
-  const fragment = purifier.sanitize(html, {
-    ALLOW_ARIA_ATTR: false,
-    ALLOW_DATA_ATTR: false,
-    ALLOWED_ATTR,
-    ALLOWED_TAGS,
-    RETURN_DOM_FRAGMENT: true
-  })
+  const fragment = purifier.sanitize(
+    html,
+    useStrictPolicy.value
+      ? {
+          ALLOW_ARIA_ATTR: false,
+          ALLOW_DATA_ATTR: false,
+          ALLOWED_ATTR,
+          ALLOWED_TAGS,
+          RETURN_DOM_FRAGMENT: true
+        }
+      : {
+          ADD_ATTR: COMPATIBILITY_ADD_ATTR,
+          ADD_TAGS: COMPATIBILITY_ADD_TAGS,
+          RETURN_DOM_FRAGMENT: true
+        }
+  )
+
+  if (!useStrictPolicy.value) {
+    hardenTargets(fragment)
+    return serializeFragment(fragment)
+  }
 
   for (const element of fragment.querySelectorAll('[class]')) {
     const languageClasses =
@@ -197,37 +250,26 @@ const sanitizedHtml = computed(() => {
     if (element.tagName !== 'SOURCE') element.removeAttribute('media')
   }
 
-  for (const element of fragment.querySelectorAll('input, [target]')) {
-    if (element.tagName === 'INPUT') {
-      if (
-        element.getAttribute('type')?.toLowerCase() !== 'checkbox' ||
-        !element.hasAttribute('disabled')
-      ) {
-        element.remove()
-        continue
-      }
-      for (const attribute of [...element.attributes]) {
-        if (!['checked', 'disabled', 'type'].includes(attribute.name)) {
-          element.removeAttribute(attribute.name)
-        }
-      }
-      const listItem = element.parentElement
-      if (listItem?.tagName === 'LI') {
-        listItem.classList.add('task-list-item')
-        const list = listItem.parentElement
-        if (list?.tagName === 'OL' || list?.tagName === 'UL') {
-          list.classList.add('contains-task-list')
-        }
-      }
+  for (const input of fragment.querySelectorAll('input')) {
+    if (
+      input.getAttribute('type')?.toLowerCase() !== 'checkbox' ||
+      !input.hasAttribute('disabled')
+    ) {
+      input.remove()
       continue
     }
-
-    if (element.hasAttribute('target')) {
-      const rel = new Set((element.getAttribute('rel') ?? '').split(/\s+/))
-      rel.delete('')
-      rel.add('noopener')
-      rel.add('noreferrer')
-      element.setAttribute('rel', [...rel].join(' '))
+    for (const attribute of [...input.attributes]) {
+      if (!['checked', 'disabled', 'type'].includes(attribute.name)) {
+        input.removeAttribute(attribute.name)
+      }
+    }
+    const listItem = input.parentElement
+    if (listItem?.tagName === 'LI') {
+      listItem.classList.add('task-list-item')
+      const list = listItem.parentElement
+      if (list?.tagName === 'OL' || list?.tagName === 'UL') {
+        list.classList.add('contains-task-list')
+      }
     }
   }
 
@@ -286,9 +328,8 @@ const sanitizedHtml = computed(() => {
     }
   }
 
-  const container = document.createElement('div')
-  container.append(fragment)
-  return container.innerHTML
+  hardenTargets(fragment)
+  return serializeFragment(fragment)
 })
 
 function normalizeIntegerAttribute(

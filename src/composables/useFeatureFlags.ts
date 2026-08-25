@@ -41,7 +41,8 @@ export enum ServerFeatureFlag {
   CHURNKEY_APP_ID = 'churnkey_app_id',
   SIGNUP_TURNSTILE = 'signup_turnstile',
   SUPPORTS_MODEL_TYPE_TAGS = 'supports_model_type_tags',
-  ONBOARDING_TOUR_ENABLED = 'onboarding_tour_enabled'
+  ONBOARDING_TOUR_ENABLED = 'onboarding_tour_enabled',
+  STRICT_EXTENSION_RICH_TEXT_ENABLED = 'strict_extension_rich_text_enabled'
 }
 
 /**
@@ -252,6 +253,13 @@ export function useFeatureFlags() {
       return resolveFlag(
         ServerFeatureFlag.ONBOARDING_TOUR_ENABLED,
         remoteConfig.value.onboarding_tour_enabled,
+        false
+      )
+    },
+    get strictExtensionRichTextEnabled() {
+      return resolveFlag(
+        ServerFeatureFlag.STRICT_EXTENSION_RICH_TEXT_ENABLED,
+        remoteConfig.value.strict_extension_rich_text_enabled,
         false
       )
     }
