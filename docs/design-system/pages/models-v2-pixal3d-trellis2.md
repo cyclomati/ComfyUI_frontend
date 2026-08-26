@@ -25,6 +25,7 @@ analytics, or error handling.
 | Persistent example-input picker                              | Approved variant          | Existing media-card and selected-state patterns                    |
 | Interactive GLB canvas                                       | Feature-local composition | Three.js and the product's established 3D-viewer interaction model |
 | Result JSON and download action                              | Approved variant          | Existing result card                                               |
+| FAQ disclosure list                                          | Exact reuse               | Existing models-v2 directory FAQ                                   |
 
 ## Workflow mapping
 
@@ -66,6 +67,8 @@ analytics, or error handling.
 - The uploaded filename appears in the JSON input payload.
 - Prompt, video duration, aspect ratio, resolution, and seed controls are absent.
 - The result is an orbitable, zoomable GLB viewer with a GLB download action.
+- The bottom FAQ answers image-quality, output, usage, and cost questions with
+  native expandable disclosures and matching FAQ structured data.
 - Upload controls have full-surface pointer and keyboard targets with visible
   hover and focus feedback.
 - The route remains `noindex` and behaves at desktop and narrow widths.

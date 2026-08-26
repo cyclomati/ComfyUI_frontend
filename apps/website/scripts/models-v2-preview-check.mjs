@@ -348,6 +348,22 @@ const run = async () => {
       (await imageTo3dMd.text()).includes('- Output: textured GLB model'),
     ''
   )
+  const faqItems = desktop.locator('#model-faq details')
+  check(
+    'image-to-3d FAQ is visible',
+    (await faqItems.count()) >= 5 && (await faqItems.first().isVisible()),
+    `${await faqItems.count()} questions`
+  )
+  await faqItems.nth(1).locator('summary').click()
+  check(
+    'image-to-3d FAQ expands',
+    await faqItems
+      .nth(1)
+      .locator('p')
+      .getByText('Use a PNG, JPG, or WebP')
+      .isVisible(),
+    ''
+  )
 
   // ---------- MOBILE ----------
   const mobile = await (
