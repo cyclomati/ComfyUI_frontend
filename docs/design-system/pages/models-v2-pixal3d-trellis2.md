@@ -67,8 +67,9 @@ analytics, or error handling.
 - The uploaded filename appears in the JSON input payload.
 - Prompt, video duration, aspect ratio, resolution, and seed controls are absent.
 - The result is an orbitable, zoomable GLB viewer with a GLB download action.
-- The bottom FAQ answers image-quality, output, usage, and cost questions with
-  native expandable disclosures and matching FAQ structured data.
+- The bottom FAQ presents seven verified model, workflow, access, licensing,
+  output, and experience questions with native expandable disclosures and
+  matching FAQ structured data.
 - Upload controls have full-surface pointer and keyboard targets with visible
   hover and focus feedback.
 - The route remains `noindex` and behaves at desktop and narrow widths.

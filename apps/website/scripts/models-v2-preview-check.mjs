@@ -351,7 +351,7 @@ const run = async () => {
   const faqItems = desktop.locator('#model-faq details')
   check(
     'image-to-3d FAQ is visible',
-    (await faqItems.count()) >= 5 && (await faqItems.first().isVisible()),
+    (await faqItems.count()) === 7 && (await faqItems.first().isVisible()),
     `${await faqItems.count()} questions`
   )
   await faqItems.nth(1).locator('summary').click()
@@ -360,7 +360,7 @@ const run = async () => {
     await faqItems
       .nth(1)
       .locator('p')
-      .getByText('Use a PNG, JPG, or WebP')
+      .getByText('The workflow prepares the image')
       .isVisible(),
     ''
   )

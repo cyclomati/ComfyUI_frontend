@@ -220,46 +220,70 @@ const breadcrumbs = [
   { label: 'AI Models', href: '/models-v2' },
   { label: name }
 ]
-const faqs = [
-  {
-    question: `What is ${name}?`,
-    answer: `${name} is ${blurb} You can run it in the browser playground, on Comfy Cloud, or locally in ComfyUI with full control over every parameter.`
-  },
-  ...(isImageTo3d
-    ? [
-        {
-          question: 'What kind of image works best?',
-          answer:
-            'Use a PNG, JPG, or WebP with one clearly visible object against a simple background. Clean silhouettes and minimal occlusion produce the clearest meshes.'
-        },
-        {
-          question: `What does ${name} create?`,
-          answer:
-            'The workflow creates a textured GLB model that you can inspect in the interactive viewer, download, and continue refining in the full ComfyUI graph.'
-        }
-      ]
-    : []),
-  {
-    question: `How do I run ${name} in ComfyUI?`,
-    answer:
-      'Press Run in the playground above — the first five runs are free and no card is required. You can also open the full graph on Comfy Cloud or download the workflow to run locally.'
-  },
-  {
-    question: `Is ${name} free to use?`,
-    answer:
-      kind === 'open weights'
-        ? `${name} is open weights: download it and run it locally in ComfyUI for free, forever. Comfy Cloud adds hosted GPUs with a free trial quota.`
-        : `${name} runs through Comfy partner nodes on Cloud credits. New accounts include free runs to try it, with no card required.`
-  },
-  ...(workflowCount > 0
-    ? [
-        {
-          question: `How many ComfyUI workflows use ${name}?`,
-          answer: `There are ${workflowCount} workflow templates using ${name}, ready to load and customize.`
-        }
-      ]
-    : [])
-]
+const faqs = isImageTo3d
+  ? [
+      {
+        question: 'What are TRELLIS.2 and Pixal3D?',
+        answer:
+          'TRELLIS.2 and Pixal3D are open-source image-to-3D models available as selectable alternatives in this ComfyUI workflow. Upload one 2D image and choose either model to generate a textured 3D asset. Microsoft developed TRELLIS.2; Pixal3D was developed by researchers from Tsinghua University, Tencent ARC Lab, and Victoria University of Wellington.'
+      },
+      {
+        question: 'How does the TRELLIS.2 and Pixal3D workflow turn a 2D image into a 3D model?',
+        answer:
+          'The workflow prepares the image, estimates its geometry and camera conditioning, generates the object\'s 3D structure, converts that structure into a mesh, and creates PBR texture maps. Because one photo cannot show every surface, the selected model infers the hidden sides and back.'
+      },
+      {
+        question: 'How is TRELLIS.2 different from the original TRELLIS, or from other image-to-3D generators?',
+        answer:
+          'TRELLIS.2 is Microsoft\'s newer architecture built around its O-Voxel representation for detailed geometry, complex topology, and PBR materials. Pixal3D\'s current implementation builds on the TRELLIS.2 backbone but explicitly back-projects pixel features into 3D to create direct pixel-to-3D correspondences. In this template they are alternative generation paths, not separate geometry and texturing stages.'
+      },
+      {
+        question: 'How do I access TRELLIS.2 and Pixal3D on Comfy?',
+        answer:
+          'Open the full workflow from this page to run it in ComfyUI, either locally or on Comfy Cloud. The required model files are available from the Comfy-Org TRELLIS.2 and Pixal3D repositories on Hugging Face. Cloud pricing is shown before you run the workflow.'
+      },
+      {
+        question: 'Can I use outputs from TRELLIS.2 and Pixal3D commercially?',
+        answer:
+          'The upstream TRELLIS.2 and Pixal3D projects are released under the MIT License, which permits commercial use subject to its notice requirements. You remain responsible for rights to your input image and output, and third-party components may have their own license terms.'
+      },
+      {
+        question: 'What file formats does the workflow export?',
+        answer:
+          'This workflow exports a textured GLB file. You can inspect it in the interactive 3D viewer, download it, and continue refining it in a game engine or 3D application.'
+      },
+      {
+        question: 'Do I need 3D modeling experience to use it?',
+        answer:
+          'No. You can generate a textured model from a single image without manual sculpting or UV unwrapping. Production assets may still benefit from cleanup, retopology, or material adjustments depending on how you plan to use them.'
+      }
+    ]
+  : [
+      {
+        question: `What is ${name}?`,
+        answer: `${name} is ${blurb} You can run it in the browser playground, on Comfy Cloud, or locally in ComfyUI with full control over every parameter.`
+      },
+      {
+        question: `How do I run ${name} in ComfyUI?`,
+        answer:
+          'Press Run in the playground above — the first five runs are free and no card is required. You can also open the full graph on Comfy Cloud or download the workflow to run locally.'
+      },
+      {
+        question: `Is ${name} free to use?`,
+        answer:
+          kind === 'open weights'
+            ? `${name} is open weights: download it and run it locally in ComfyUI for free, forever. Comfy Cloud adds hosted GPUs with a free trial quota.`
+            : `${name} runs through Comfy partner nodes on Cloud credits. New accounts include free runs to try it, with no card required.`
+      },
+      ...(workflowCount > 0
+        ? [
+            {
+              question: `How many ComfyUI workflows use ${name}?`,
+              answer: `There are ${workflowCount} workflow templates using ${name}, ready to load and customize.`
+            }
+          ]
+        : [])
+    ]
 const faqJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
