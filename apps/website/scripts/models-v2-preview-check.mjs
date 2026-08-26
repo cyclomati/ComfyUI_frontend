@@ -250,6 +250,18 @@ const run = async () => {
   )
   const prefilledImage = desktop.locator('#ref-preview')
   await prefilledImage.waitFor({ state: 'visible' })
+  const dropzoneBounds = await desktop.locator('#dropzone').boundingBox()
+  const attachmentBounds = await desktop
+    .locator('#ref-attachment')
+    .boundingBox()
+  check(
+    'active image sits beside the upload window',
+    dropzoneBounds !== null &&
+      attachmentBounds !== null &&
+      attachmentBounds.x >= dropzoneBounds.x + dropzoneBounds.width &&
+      attachmentBounds.y < dropzoneBounds.y + dropzoneBounds.height,
+    ''
+  )
   const exampleImages = desktop.locator('[data-example-image]')
   check(
     'image-to-3d offers persistent examples',

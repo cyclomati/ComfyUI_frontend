@@ -31,6 +31,8 @@ analytics, or error handling.
 
 - Exposed input: one PNG, JPG, or WebP image.
 - Default input: the workflow's `viking_wolf_rune_axe.png` example.
+- The active image card sits beside the upload target on desktop and stacks
+  below it at narrow widths.
 - Three persistent example inputs can be selected. Removing an input clears the
   current selection without removing the example choices.
 - Output: textured GLB model.
