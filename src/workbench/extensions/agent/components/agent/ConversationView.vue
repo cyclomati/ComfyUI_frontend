@@ -13,8 +13,15 @@ import type { TurnId } from '../../schemas/agentApiSchema'
 import AgentMessage from './message/AgentMessage.vue'
 import UserMessage from './message/UserMessage.vue'
 
-const { entries, editableTurnId = null } = defineProps<{
+const {
+  entries,
+  showPaywallAddCredits = true,
+  showPaywallUpgrade = true,
+  editableTurnId = null
+} = defineProps<{
   entries: ConversationEntry[]
+  showPaywallAddCredits?: boolean
+  showPaywallUpgrade?: boolean
   editableTurnId?: TurnId | null
 }>()
 const emit = defineEmits<{
@@ -88,6 +95,8 @@ watch(
             <AgentMessage
               v-else
               :message="entry"
+              :show-add-credits="showPaywallAddCredits"
+              :show-upgrade="showPaywallUpgrade"
               @feedback="emit('feedback', entry.id, $event)"
               @add-credits="emit('addCredits')"
               @upgrade-subscription="emit('upgradeSubscription')"

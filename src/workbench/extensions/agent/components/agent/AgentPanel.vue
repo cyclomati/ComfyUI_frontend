@@ -42,6 +42,8 @@ const {
   workflowDetached = false,
   getMentionNodes = () => [],
   getMentionAssets = async () => [],
+  showPaywallAddCredits = true,
+  showPaywallUpgrade = true,
   sessionId = null,
   customTitle,
   historyGroups,
@@ -60,6 +62,8 @@ const {
   workflowDetached?: boolean
   getMentionNodes?: () => SelectedNode[]
   getMentionAssets?: () => AssetItem[] | Promise<AssetItem[]>
+  showPaywallAddCredits?: boolean
+  showPaywallUpgrade?: boolean
   sessionId?: string | null
   customTitle?: string
   historyGroups: HistoryGroups
@@ -288,6 +292,8 @@ defineExpose({ addAttachment, updateAttachment, removeAttachment })
           v-else
           :entries="entries"
           :editable-turn-id="editableTurnId"
+          :show-paywall-add-credits="showPaywallAddCredits"
+          :show-paywall-upgrade="showPaywallUpgrade"
           @edit-prompt="composerRef?.replaceDraft($event)"
           @feedback="(id, vote) => emit('feedback', id, vote)"
           @add-credits="emit('addCredits')"
