@@ -1,4 +1,4 @@
-# 16. Separate Widget Kind from Presentation Type
+# 20. Separate Widget Kind from Presentation Type
 
 Date: 2026-08-24
 
