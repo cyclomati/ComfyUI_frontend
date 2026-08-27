@@ -16,7 +16,6 @@ import { useI18n } from 'vue-i18n'
 
 import { useCurrentUser } from '@/composables/auth/useCurrentUser'
 import { fitGraphToView } from '@/composables/canvas/fitGraphToView'
-import { useFocusNode } from '@/composables/canvas/useFocusNode'
 import { useTelemetry } from '@/platform/telemetry'
 import { useWorkflowService } from '@/platform/workflow/core/services/workflowService'
 import type { ComfyWorkflow } from '@/platform/workflow/management/stores/comfyWorkflow'
@@ -112,7 +111,6 @@ const tabActivity = useWorkflowTabActivityStore()
 const CREATING_TAB_MIN_DURATION_MS = 500
 
 const canvasStore = useCanvasStore()
-const { focusNodeInstance } = useFocusNode()
 
 function toSelectedNode(node: LGraphNode): SelectedNode {
   return {
@@ -178,27 +176,26 @@ watch(
   { immediate: true }
 )
 
-let cloudIdsByName = new Map<string, string>()
-const availableWorkflowReferences = ref<WorkflowReference[]>([])
+const cloudWorkflowIndex = ref<WorkflowReference[]>([])
 const workflowReferences = ref<WorkflowReference[]>([])
+
+const cloudIdsByName = computed(() => {
+  const nameCounts = new Map<string, number>()
+  for (const { name } of cloudWorkflowIndex.value)
+    nameCounts.set(name, (nameCounts.get(name) ?? 0) + 1)
+
+  return new Map(
+    cloudWorkflowIndex.value.flatMap(({ id, name }) =>
+      nameCounts.get(name) === 1 ? [[name, id] as const] : []
+    )
+  )
+})
 
 async function refreshCloudWorkflowIds(): Promise<void> {
   try {
     const workflows = await rest.listCloudWorkflows()
-    availableWorkflowReferences.value = workflows.flatMap(({ id, name }) =>
+    cloudWorkflowIndex.value = workflows.flatMap(({ id, name }) =>
       name === undefined ? [] : [{ id, name }]
-    )
-    const nameCounts = new Map<string, number>()
-    for (const { name } of workflows) {
-      if (name !== undefined)
-        nameCounts.set(name, (nameCounts.get(name) ?? 0) + 1)
-    }
-    cloudIdsByName = new Map(
-      workflows.flatMap(({ id, name }) =>
-        name !== undefined && nameCounts.get(name) === 1
-          ? [[name, id] as const]
-          : []
-      )
     )
   } catch (error) {
     console.warn('[agent] could not refresh cloud workflow ids', error)
@@ -214,10 +211,23 @@ function openSavedTabsNamed(filename: string): ComfyWorkflow[] {
 function cloudIdFor(tab: ComfyWorkflow): string | undefined {
   const saved =
     !tab.isTemporary && openSavedTabsNamed(tab.filename).length === 1
-      ? cloudIdsByName.get(tab.filename)
+      ? cloudIdsByName.value.get(tab.filename)
       : undefined
   return saved ?? bindingStore.workflowIdFor(tab.path)
 }
+
+// Candidate policy lives at the composition boundary. Composer only receives
+// the resulting list, so this can later switch to saved workflows or search
+// results without changing picker, filtering, or chip behavior.
+const availableWorkflowReferences = computed<WorkflowReference[]>(() => {
+  const byId = new Map<string, WorkflowReference>()
+  for (const tab of workflowStore.openWorkflows) {
+    const id = cloudIdFor(tab)
+    if (id !== undefined && !byId.has(id))
+      byId.set(id, { id, name: tab.filename })
+  }
+  return [...byId.values()]
+})
 
 let lastKnownGraph: { serialized: string; workflowId: string } | null = null
 
@@ -473,7 +483,7 @@ function boundTabFor(workflowId: string): ComfyWorkflow | null {
   const bound =
     path === undefined ? null : workflowStore.getWorkflowByPath(path)
   if (bound) return bound
-  for (const [name, id] of cloudIdsByName) {
+  for (const [name, id] of cloudIdsByName.value) {
     if (id !== workflowId) continue
     const matches = openSavedTabsNamed(name)
     return matches.length === 1 ? matches[0] : null
@@ -1057,32 +1067,12 @@ function onOpenAssets(): void {
 function onMentionPick(node: SelectedNode): void {
   const stagedBefore = selectionTags.value.length
   addSelectionTag(node)
-  const canvas = app.canvas
-  const graphNode = viewedGraphNodes().find(
-    (candidate) =>
-      workflowStore.nodeToNodeLocatorId(candidate) === selectedNodeKey(node)
-  )
-  if (canvas && graphNode) {
-    canvas.selectItems([graphNode], true)
-    canvasStore.updateSelectedItems()
-  }
   if (selectionTags.value.length > stagedBefore)
     useTelemetry()?.trackAgentNodeTagged({ source: 'mention_picker' })
 }
 
 function onRemoveSelectionTag(id: string): void {
-  const canvas = app.canvas
-  const node = getNodeByLocatorId(app.rootGraph, id)
-  if (canvas && node && canvas.selectedItems.has(node)) {
-    canvas.deselect(node)
-    canvasStore.updateSelectedItems()
-  }
   removeSelectionTag(id)
-}
-
-function onFocusSelectionTag(id: string): void {
-  const node = getNodeByLocatorId(app.rootGraph, id)
-  if (node) void focusNodeInstance(node)
 }
 
 function onClosePanel(): void {
@@ -1248,7 +1238,6 @@ function onPanelDrop(event: DragEvent): void {
       @open-assets="onOpenAssets"
       @select-nodes="onSelectNodes"
       @remove-tag="onRemoveSelectionTag"
-      @focus-tag="onFocusSelectionTag"
       @mention-pick="onMentionPick"
       @workflow-reference-pick="addWorkflowReference"
       @remove-workflow-reference="removeWorkflowReference"
