@@ -5029,7 +5029,6 @@
     "workflows": "Workflows",
     "noNodesToReference": "No nodes available to reference",
     "noWorkflowsToReference": "No workflows available to reference",
-    "workflowReferenceLabel": "{workflow} workflow reference",
     "addNodesFromGraph": "Add nodes from graph",
     "dragAndDropAssets": "Drag and drop assets here",
     "nodeSelection": {
@@ -5047,7 +5046,6 @@
     "chooseWorkflow": "Choose a workflow",
     "selectWorkflowForAgent": "Select a workflow for agent to work in",
     "chooseWorkflowForChat": "Choose a workflow for this chat",
-    "dontWorkInWorkflow": "Don’t work in a workflow",
     "searchWorkflows": "Search workflows",
     "switchWorkflow": "Switch workflow",
     "runModeTriggerAsk": "Ask",

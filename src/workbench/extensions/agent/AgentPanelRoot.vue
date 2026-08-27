@@ -304,10 +304,6 @@ async function onSelectTab(path: string): Promise<void> {
   if (tab) await workflowService.openWorkflow(tab)
 }
 
-function onClearWorkflow(): void {
-  workflowDetached.value = true
-}
-
 let lastSentGraph: string | null = null
 let snapshotTabPath: string | null = null
 
@@ -1235,7 +1231,6 @@ function onPanelDrop(event: DragEvent): void {
       :workflow-detached="workflowDetached"
       :get-mention-nodes="mentionableNodes"
       @select-tab="onSelectTab"
-      @clear-workflow="onClearWorkflow"
       @send="onSend"
       @stop="onStop"
       @attach="onAttach"

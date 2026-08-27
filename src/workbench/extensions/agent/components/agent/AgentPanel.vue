@@ -86,7 +86,6 @@ const emit = defineEmits<{
   removeWorkflowReference: [id: string]
   feedback: [turnId: string, vote: 'up' | 'down' | null]
   selectTab: [path: string]
-  clearWorkflow: []
   newChat: []
   toggleSize: []
   close: []
@@ -346,7 +345,6 @@ defineExpose({ addAttachment, updateAttachment, removeAttachment })
                 :tabs="workflowTabs"
                 :detached="workflowDetached"
                 @select-tab="emit('selectTab', $event)"
-                @clear="emit('clearWorkflow')"
               />
             </template>
           </Composer>
