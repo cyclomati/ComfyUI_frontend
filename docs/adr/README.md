@@ -32,7 +32,8 @@ An Architecture Decision Record captures an important architectural decision mad
 | [0020](0020-bound-renderer-reactivity.md)                                   | Bound Renderer Reactivity                                   | Proposed | 2026-08-26 |
 | [0021](0021-classify-and-coalesce-canvas-invalidation.md)                   | Classify and Coalesce Canvas Invalidation                   | Proposed | 2026-08-26 |
 | [0022](0022-performance-measurement-and-ci-policy.md)                       | Performance Measurement and CI Policy                       | Proposed | 2026-08-26 |
-| [0023](0023-asset-deletion-preserves-owning-job.md)                         | Asset Deletion Preserves the Owning Job                     | Accepted | 2026-08-27 |
+| [0023](0023-widget-entities-and-legacy-behavior-boundary.md)                | Widget Entities and Legacy Behavior Boundary                | Proposed | 2026-08-26 |
+| [0024](0024-asset-deletion-preserves-owning-job.md)                         | Asset Deletion Preserves the Owning Job                     | Accepted | 2026-08-27 |
 
 ## Creating a New ADR
 
