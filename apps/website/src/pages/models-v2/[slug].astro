@@ -10,6 +10,7 @@ import { cn } from '@comfyorg/tailwind-utils'
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import { ArrowRight, Coins as CreditsIcon, Download as DownloadIcon, X as RemoveIcon } from '@lucide/vue'
 
+import FAQSplit01 from '../../components/blocks/FAQSplit01.vue'
 import BrandButton from '../../components/common/BrandButton.vue'
 import GlassCard from '../../components/common/GlassCard.vue'
 import Badge from '../../components/ui/badge/Badge.vue'
@@ -90,28 +91,35 @@ const imageTo3dExamples = isImageTo3d
         name: 'viking_wolf_rune_axe.png',
         imageUrl:
           'https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/viking_wolf_rune_axe.png',
-        alt: 'Viking wolf rune axe example input'
+        alt: 'Viking wolf rune axe example input',
+        modelUrl:
+          '/assets/models-v2/pixal3d-trellis2/viking_wolf_rune_axe-preview.glb'
       },
       {
-        label: 'Robot',
-        name: '3d_hunyuan3d-v2.1_input_image.png',
+        label: 'Viking',
+        name: 'viking-fisher-input.png',
         imageUrl:
-          'https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/3d_hunyuan3d-v2.1_input_image.png',
-        alt: 'Stylized robot example input'
+          '/assets/models-v2/pixal3d-trellis2/viking-fisher-input.png',
+        alt: 'Viking holding a fish and an axe example input',
+        modelUrl:
+          '/assets/models-v2/pixal3d-trellis2/viking-fisher-result.glb'
       },
       {
-        label: 'Forest spirit',
-        name: 'api_rodin_image_to_model_input_image.png',
+        label: 'Dragon',
+        name: 'dragon-hatchling-input.png',
         imageUrl:
-          'https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/api_rodin_image_to_model_input_image.png',
-        alt: 'Forest spirit character example input'
+          '/assets/models-v2/pixal3d-trellis2/dragon-hatchling-input.png',
+        alt: 'Crystal-backed dragon emerging from an egg example input',
+        modelUrl:
+          '/assets/models-v2/pixal3d-trellis2/dragon-hatchling-result.glb'
       }
     ]
   : []
 const defaultImageTo3dExample = imageTo3dExamples[0]
-const imageTo3dModelUrl = isImageTo3d
-  ? '/assets/models-v2/pixal3d-trellis2/viking_wolf_rune_axe-preview.glb'
-  : null
+const imageTo3dModelUrl = defaultImageTo3dExample?.modelUrl ?? null
+const displayGallery = isImageTo3d
+  ? imageTo3dExamples.map(({ imageUrl }) => imageUrl)
+  : gallery
 const baseCredits = kind === 'partner api' ? 12 : 6
 const kindLabel = kind === 'open weights' ? 'Open weights' : 'Partner API'
 const sentence = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
@@ -223,52 +231,80 @@ const breadcrumbs = [
 const faqs = isImageTo3d
   ? [
       {
-        question: 'What are TRELLIS.2 and Pixal3D?',
+        id: 'what-is-trellis-2',
+        question: 'What is Trellis.2?',
         answer:
-          'TRELLIS.2 and Pixal3D are open-source image-to-3D models available as selectable alternatives in this ComfyUI workflow. Upload one 2D image and choose either model to generate a textured 3D asset. Microsoft developed TRELLIS.2; Pixal3D was developed by researchers from Tsinghua University, Tencent ARC Lab, and Victoria University of Wellington.'
+          "Trellis.2 is Microsoft's open-source image-to-3D model, released in December 2025. It is a 4-billion-parameter model built on a compact O-Voxel structured latent representation that generates geometry and PBR materials from a single image at effective resolutions up to 1536³. It now runs natively in ComfyUI core."
       },
       {
-        question: 'How does the TRELLIS.2 and Pixal3D workflow turn a 2D image into a 3D model?',
+        id: 'what-is-pixal3d',
+        question: 'What is Pixal3D?',
         answer:
-          'The workflow prepares the image, estimates its geometry and camera conditioning, generates the object\'s 3D structure, converts that structure into a mesh, and creates PBR texture maps. Because one photo cannot show every surface, the selected model infers the hidden sides and back.'
+          'Pixal3D is an image-to-3D model from Tsinghua University and Tencent ARC Lab. It uses pixel-aligned generation to keep the 3D output in direct correspondence with the input view, producing near-reconstruction-level fidelity. It is built on the Trellis.2 backbone and runs natively in ComfyUI alongside it.'
       },
       {
-        question: 'How is TRELLIS.2 different from the original TRELLIS, or from other image-to-3D generators?',
+        id: 'commercial-use',
+        question: 'Can I use Trellis.2 and Pixal3D output commercially?',
         answer:
-          'TRELLIS.2 is Microsoft\'s newer architecture built around its O-Voxel representation for detailed geometry, complex topology, and PBR materials. Pixal3D\'s current implementation builds on the TRELLIS.2 backbone but explicitly back-projects pixel features into 3D to create direct pixel-to-3D correspondences. In this template they are alternative generation paths, not separate geometry and texturing stages.'
+          "Yes. Trellis.2's code and weights are MIT-licensed, and ComfyUI's native implementation replaces the non-commercial nvdiffrast and nvdiffrec dependencies from the original pipeline with a from-scratch PyTorch and SciPy reimplementation. There are no non-commercial dependencies in the ComfyUI pipeline, so generated assets can be used in commercial work."
       },
       {
-        question: 'How do I access TRELLIS.2 and Pixal3D on Comfy?',
+        id: 'pixal3d-vs-trellis-2',
+        question: 'How does Pixal3D compare to Trellis.2?',
         answer:
-          'Open the full workflow from this page to run it in ComfyUI, either locally or on Comfy Cloud. The required model files are available from the Comfy-Org TRELLIS.2 and Pixal3D repositories on Hugging Face. Cloud pricing is shown before you run the workflow.'
+          'Pixal3D shares the Trellis.2 backbone, VAEs, and DINOv3 image conditioning, and adds pixel-aligned generation, explicit image back-projection into a 3D feature volume, and cascaded refinement of structure, shape, and texture. It generally produces better results than Trellis.2, with tighter fidelity to the input image. Both output the same PBR material set.'
       },
       {
-        question: 'Can I use outputs from TRELLIS.2 and Pixal3D commercially?',
+        id: 'cost',
+        question: 'How much does it cost to use Trellis.2 or Pixal3D in ComfyUI?',
         answer:
-          'The upstream TRELLIS.2 and Pixal3D projects are released under the MIT License, which permits commercial use subject to its notice requirements. You remain responsible for rights to your input image and output, and third-party components may have their own license terms.'
+          'Nothing per asset. Both models are open weights and can run locally on consumer hardware as part of ComfyUI core, so there is no per-generation charge. They are also available on Comfy Cloud, where standard Comfy Cloud credit usage applies.'
       },
       {
-        question: 'What file formats does the workflow export?',
+        id: 'pytorch-cuda-version',
+        question: 'Do I need a specific PyTorch or CUDA version?',
         answer:
-          'This workflow exports a textured GLB file. You can inspect it in the interactive 3D viewer, download it, and continue refining it in a game engine or 3D application.'
+          'No. The original Trellis.2 pipeline required PyTorch 2.6.0 with CUDA 12.4 and a stack of compiled extensions. The native ComfyUI implementation drops all of them. If your ComfyUI runs, these models run on your current PyTorch.'
       },
       {
-        question: 'Do I need 3D modeling experience to use it?',
+        id: 'inputs',
+        question: 'What inputs do Trellis.2 and Pixal3D take?',
         answer:
-          'No. You can generate a textured model from a single image without manual sculpting or UV unwrapping. Production assets may still benefit from cleanup, retopology, or material adjustments depending on how you plan to use them.'
+          'A single image. Both models generate geometry and materials from one input view. The workflows also include BiRefNet for background removal and MoGe for camera field-of-view estimation, both available on the Comfy-Org Hugging Face page.'
+      },
+      {
+        id: 'model-weights',
+        question: 'Which model weights do I need to download?',
+        answer:
+          'Comfy-Org/TRELLIS.2 and Comfy-Org/Pixal3D from Hugging Face, plus Comfy-Org/BiRefNet for background removal and Comfy-Org/MoGe for camera FOV estimation. The workflow note lists the target directory for each.'
+      },
+      {
+        id: 'texture-maps',
+        question: 'What texture maps does the ComfyUI pipeline generate?',
+        answer:
+          "Trellis.2's texturing model produces base color, roughness, and metallic maps. The ComfyUI implementation adds a UV unwrapping node and bakes two more maps from the high-poly mesh: a normal map and an ambient occlusion map, giving a complete PBR material set."
+      },
+      {
+        id: 'mesh-post-processing',
+        question: 'What mesh post-processing nodes are included?',
+        answer:
+          'Four new nodes ship with this release. Remesh Mesh fixes holes and mesh imperfections, Decimate Mesh reduces face and vertex count to a target budget, Smooth Mesh Normals smooths the mesh volume, and Render Mesh produces a quick image render. The Load 3D, Preview 3D, and Save 3D nodes were also rebuilt for these workflows.'
       }
     ]
   : [
       {
+        id: 'about',
         question: `What is ${name}?`,
         answer: `${name} is ${blurb} You can run it in the browser playground, on Comfy Cloud, or locally in ComfyUI with full control over every parameter.`
       },
       {
+        id: 'run-in-comfyui',
         question: `How do I run ${name} in ComfyUI?`,
         answer:
           'Press Run in the playground above — the first five runs are free and no card is required. You can also open the full graph on Comfy Cloud or download the workflow to run locally.'
       },
       {
+        id: 'free-to-use',
         question: `Is ${name} free to use?`,
         answer:
           kind === 'open weights'
@@ -278,6 +314,7 @@ const faqs = isImageTo3d
       ...(workflowCount > 0
         ? [
             {
+              id: 'workflow-count',
               question: `How many ComfyUI workflows use ${name}?`,
               answer: `There are ${workflowCount} workflow templates using ${name}, ready to load and customize.`
             }
@@ -496,6 +533,7 @@ const faqJsonLd = {
                     data-example-name={example.name}
                     data-example-url={example.imageUrl}
                     data-example-alt={example.alt}
+                    data-example-model-url={example.modelUrl}
                     data-selected={index === 0 ? '' : undefined}
                     aria-label={`Use ${example.label} example`}
                     aria-pressed={index === 0 ? 'true' : 'false'}
@@ -540,18 +578,6 @@ const faqJsonLd = {
           </span>
           <div class="flex items-center gap-3">
             <BrandButton id="pg-reset" variant="outline" size="xs" class="uppercase tracking-widest">Reset</BrandButton>
-            <BrandButton
-              id="pg-run"
-              data-base-credits={baseCredits}
-              data-slug={slugId}
-              data-workflow-kind={isImageTo3d ? 'image-to-3d' : 'standard'}
-              data-default-image-name={defaultImageTo3dExample?.name}
-              data-default-image-url={defaultImageTo3dExample?.imageUrl}
-              data-default-image-alt={defaultImageTo3dExample?.alt}
-              variant="solid"
-              size="xs"
-              class="uppercase tracking-widest"
-            >Sign in to run — 5 free</BrandButton>
           </div>
         </div>
       </div>
@@ -670,7 +696,7 @@ const faqJsonLd = {
       <p class:list={[bodyCopy, 'mt-2']}>{isImageTo3d ? 'Example image-to-3D outputs from Comfy workflow templates.' : 'Real outputs from the workflow templates — click one to load its prompt into the app.'}</p>
     </div>
     <ul class="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
-      {gallery.map((src, i) => (
+      {displayGallery.map((src, i) => (
         <li class="group relative overflow-hidden rounded-xl border border-white/10 bg-secondary-mauve/30">
           <img src={src} alt={`${name} example`} loading="lazy" class="aspect-video w-full object-cover transition duration-500 group-hover:scale-[1.03]" onerror="this.style.display='none'" />
           {!isImageTo3d && (
@@ -743,27 +769,28 @@ const faqJsonLd = {
     </div>
   </section>
 
-  <section id="model-faq" class="mx-auto max-w-9xl px-5 pb-16 sm:px-6 lg:grid lg:grid-cols-[280px_1fr] lg:gap-14 lg:px-20 lg:pb-24">
-    <div class="mb-6 lg:mb-0">
-      <h2 class="text-sm font-extrabold uppercase tracking-[0.3em] text-primary-comfy-yellow">Questions</h2>
-      <p class="mt-2 text-2xl font-semibold text-primary-warm-white">{name} in ComfyUI</p>
-    </div>
-    <div class="divide-y divide-white/10 border-t border-white/10">
-      {faqs.map(({ question, answer }) => (
-        <details class="group py-4">
-          <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-[15px] text-primary-warm-white [&::-webkit-details-marker]:hidden">
-            {question}
-            <span aria-hidden="true" class="text-xl font-light text-primary-warm-gray transition group-open:rotate-45">+</span>
-          </summary>
-          <p class="mt-3 max-w-2xl text-sm font-light leading-relaxed text-primary-comfy-canvas">{answer}</p>
-        </details>
-      ))}
-    </div>
-  </section>
+  <FAQSplit01
+    id="model-faq"
+    heading="Frequently asked questions"
+    faqs={faqs}
+    client:visible
+  />
 
   <!-- MOBILE STICKY RUN BAR -->
   <div class="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-primary-comfy-ink/95 px-4 pb-[calc(env(safe-area-inset-bottom)+12px)] pt-3 backdrop-blur lg:hidden">
-    <BrandButton id="pg-run-mobile" variant="solid" size="xs" class="w-full py-3.5 uppercase tracking-widest">Run — ~{baseCredits} credits</BrandButton>
+    <BrandButton
+      id="pg-run-mobile"
+      data-base-credits={baseCredits}
+      data-slug={slugId}
+      data-workflow-kind={isImageTo3d ? 'image-to-3d' : 'standard'}
+      data-default-image-name={defaultImageTo3dExample?.name}
+      data-default-image-url={defaultImageTo3dExample?.imageUrl}
+      data-default-image-alt={defaultImageTo3dExample?.alt}
+      data-default-model-url={defaultImageTo3dExample?.modelUrl}
+      variant="solid"
+      size="xs"
+      class="w-full py-3.5 uppercase tracking-widest"
+    >Run — ~{baseCredits} credits</BrandButton>
     <p class:list={[helperCopy, 'mt-1.5 text-center']}>Sign in at run · 5 free · no card</p>
   </div>
   <div class="h-24 lg:hidden"></div>
@@ -898,25 +925,58 @@ const faqJsonLd = {
         fillLight.position.set(-4, 2, -3)
         scene.add(fillLight)
 
-        const { scene: model } = await new GLTFLoader().loadAsync(modelUrl)
+        let model: import('three').Object3D | null = null
+        let loadVersion = 0
 
-        const bounds = new THREE.Box3().setFromObject(model)
-        const size = bounds.getSize(new THREE.Vector3())
-        const center = bounds.getCenter(new THREE.Vector3())
-        const diameter = Math.max(size.x, size.y, size.z)
-        model.position.sub(center)
-        scene.add(model)
+        const disposeModel = () => {
+          if (!model) return
+          scene.remove(model)
+          model.traverse((object) => {
+            if (!(object instanceof THREE.Mesh)) return
+            object.geometry.dispose()
+            const materials = Array.isArray(object.material)
+              ? object.material
+              : [object.material]
+            materials.forEach((material) => material.dispose())
+          })
+          model = null
+        }
 
-        camera.near = diameter / 100
-        camera.far = diameter * 100
-        camera.position.set(
-          diameter * 1.15,
-          diameter * 0.75,
-          diameter * 1.35
-        )
-        camera.updateProjectionMatrix()
-        controls.target.set(0, 0, 0)
-        controls.update()
+        const loadModel = async (url: string) => {
+          const version = ++loadVersion
+          status?.classList.remove('hidden')
+          if (status) status.textContent = 'Loading 3D preview…'
+          const { scene: nextModel } = await new GLTFLoader().loadAsync(url)
+          if (version !== loadVersion || !canvas.isConnected) return
+
+          disposeModel()
+          model = nextModel
+          const bounds = new THREE.Box3().setFromObject(model)
+          const size = bounds.getSize(new THREE.Vector3())
+          const center = bounds.getCenter(new THREE.Vector3())
+          const diameter = Math.max(size.x, size.y, size.z)
+          model.position.sub(center)
+          scene.add(model)
+
+          camera.near = diameter / 100
+          camera.far = diameter * 100
+          camera.position.set(
+            diameter * 1.15,
+            diameter * 0.75,
+            diameter * 1.35
+          )
+          camera.updateProjectionMatrix()
+          controls.target.set(0, 0, 0)
+          controls.update()
+          status?.classList.add('hidden')
+        }
+
+        const onModelUrlChange = (event: Event) => {
+          const { url } = (event as CustomEvent<{ url: string }>).detail
+          void loadModel(url)
+        }
+        canvas.addEventListener('model-url-change', onModelUrlChange)
+        await loadModel(modelUrl)
 
         const resize = () => {
           const width = canvas.clientWidth
@@ -937,7 +997,6 @@ const faqJsonLd = {
           frame = requestAnimationFrame(render)
         }
         render()
-        status?.classList.add('hidden')
 
         document.addEventListener(
           'astro:before-swap',
@@ -945,14 +1004,8 @@ const faqJsonLd = {
             cancelAnimationFrame(frame)
             resizeObserver.disconnect()
             controls.dispose()
-            model.traverse((object) => {
-              if (!(object instanceof THREE.Mesh)) return
-              object.geometry.dispose()
-              const materials = Array.isArray(object.material)
-                ? object.material
-                : [object.material]
-              materials.forEach((material) => material.dispose())
-            })
+            canvas.removeEventListener('model-url-change', onModelUrlChange)
+            disposeModel()
             renderer.dispose()
           },
           { once: true }
@@ -963,9 +1016,9 @@ const faqJsonLd = {
     }
 
     function initPlaygroundDemo() {
-      const runDesktop = document.getElementById('pg-run')
-      if (!runDesktop || runDesktop.dataset.bound === '1') return
-      runDesktop.dataset.bound = '1'
+      const runMobile = document.getElementById('pg-run-mobile')
+      if (!runMobile || runMobile.dataset.bound === '1') return
+      runMobile.dataset.bound = '1'
 
       const $ = (id: string) => document.getElementById(id)
 
@@ -989,7 +1042,6 @@ const faqJsonLd = {
       const fill = $('progress-fill')!
       const resultPreview = $('result-preview')!
       const resultSeed = $('result-seed')
-      const runMobile = $('pg-run-mobile')!
       const prompt = $('pg-prompt') as HTMLTextAreaElement | null
       const selDur = $('sel-duration') as HTMLSelectElement | null
       const selRes = $('sel-resolution') as HTMLSelectElement | null
@@ -1001,17 +1053,17 @@ const faqJsonLd = {
       const varBlock = $('var-block')
       const varStrip = $('var-strip')
       const varCost = $('var-cost')
-      const base = Number(runDesktop.dataset.baseCredits ?? '6')
-      const slug = runDesktop.dataset.slug ?? 'model'
-      const isImageTo3d = runDesktop.dataset.workflowKind === 'image-to-3d'
-      const defaultImageName = runDesktop.dataset.defaultImageName ?? null
-      const defaultImageUrl = runDesktop.dataset.defaultImageUrl ?? null
-      const defaultImageAlt = runDesktop.dataset.defaultImageAlt ?? ''
+      const base = Number(runMobile.dataset.baseCredits ?? '6')
+      const slug = runMobile.dataset.slug ?? 'model'
+      const isImageTo3d = runMobile.dataset.workflowKind === 'image-to-3d'
+      const defaultImageName = runMobile.dataset.defaultImageName ?? null
+      const defaultImageUrl = runMobile.dataset.defaultImageUrl ?? null
+      const defaultImageAlt = runMobile.dataset.defaultImageAlt ?? ''
+      const defaultModelUrl = runMobile.dataset.defaultModelUrl ?? null
 
       // BrandButton wraps labels in a centering span — writing to the button
       // itself would strip it.
       const label = (el: HTMLElement) => el.querySelector('span') ?? el
-      const runDesktopLabel = label(runDesktop)
       const runMobileLabel = label(runMobile)
 
       const seedInput = $('pg-seed') as HTMLInputElement | null
@@ -1064,13 +1116,10 @@ const faqJsonLd = {
         modalCredits.textContent = String(c)
         if (varCost) varCost.textContent = String(c * 4)
         if (!authed) {
-          runDesktopLabel.textContent = 'Sign in to run — 5 free'
           runMobileLabel.textContent = `Run — ~${c} credits`
         } else if (runsLeft > 0) {
-          runDesktopLabel.textContent = `Run again — ${runsLeft} free left`
           runMobileLabel.textContent = `Run — ${runsLeft} free left`
         } else {
-          runDesktopLabel.textContent = 'Go Creator — from $20/mo'
           runMobileLabel.textContent = 'Go Creator — from $20/mo'
         }
       }
@@ -1157,7 +1206,12 @@ const faqJsonLd = {
         }
       }
 
-      const selectExample = (name: string, url: string, alt: string) => {
+      const selectExample = (
+        name: string,
+        url: string,
+        alt: string,
+        modelUrl?: string | null
+      ) => {
         if (previewUrl) URL.revokeObjectURL(previewUrl)
         previewUrl = null
         refFile.value = ''
@@ -1170,6 +1224,13 @@ const faqJsonLd = {
         $('ref-attachment')!.classList.remove('hidden')
         $('image-error')?.classList.add('hidden')
         setExampleSelection(name)
+        if (modelUrl) {
+          $('result-model-canvas')?.dispatchEvent(
+            new CustomEvent('model-url-change', { detail: { url: modelUrl } })
+          )
+          const download = $('result-model-download') as HTMLAnchorElement | null
+          if (download) download.href = modelUrl
+        }
         renderAll()
       }
 
@@ -1187,7 +1248,12 @@ const faqJsonLd = {
 
       const resetImage = () => {
         if (defaultImageName && defaultImageUrl) {
-          selectExample(defaultImageName, defaultImageUrl, defaultImageAlt)
+          selectExample(
+            defaultImageName,
+            defaultImageUrl,
+            defaultImageAlt,
+            defaultModelUrl
+          )
         } else {
           if (previewUrl) URL.revokeObjectURL(previewUrl)
           previewUrl = null
@@ -1225,7 +1291,8 @@ const faqJsonLd = {
           selectExample(
             exampleName,
             exampleUrl,
-            button.dataset.exampleAlt ?? ''
+            button.dataset.exampleAlt ?? '',
+            button.dataset.exampleModelUrl
           )
         })
       }
@@ -1379,7 +1446,6 @@ const faqJsonLd = {
         if (!authed) { modal.classList.remove('hidden'); modal.classList.add('flex') }
         else startRun()
       }
-      runDesktop.addEventListener('click', onRun)
       runMobile.addEventListener('click', onRun)
       $('free-run-cta')?.addEventListener('click', onRun)
       modal.querySelectorAll('[data-auth]').forEach((b) =>

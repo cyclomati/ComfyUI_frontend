@@ -25,7 +25,7 @@ analytics, or error handling.
 | Persistent example-input picker                              | Approved variant          | Existing media-card and selected-state patterns                    |
 | Interactive GLB canvas                                       | Feature-local composition | Three.js and the product's established 3D-viewer interaction model |
 | Result JSON and download action                              | Approved variant          | Existing result card                                               |
-| FAQ disclosure list                                          | Exact reuse               | Existing models-v2 directory FAQ                                   |
+| FAQ split accordion                                          | Exact reuse               | `FAQSplit01` Storybook component                                   |
 
 ## Workflow mapping
 
@@ -43,8 +43,9 @@ analytics, or error handling.
 
 ## Media and data
 
-- The axe, robot, forest character, and gallery imagery come from Comfy's
-  `workflow_templates` repository.
+- The axe comes from Comfy's `workflow_templates` repository. The Viking and
+  Dragon inputs and GLB outputs are supplied review assets.
+- The examples gallery mirrors the current axe, Viking, and Dragon input set.
 - The orbitable model is a web-optimized derivative of the supplied generated
   GLB. It provides an immediate input-to-result example and is also the preview
   download target.
@@ -55,6 +56,7 @@ analytics, or error handling.
 
 - Real workflow execution and upload transport.
 - Production credit calculation.
+- Desktop run and sign-in action, pending the production execution flow.
 - PLY, OBJ, FBX, STL, USDZ, animation, material, or environment controls.
 - Persistence across reloads.
 
@@ -63,15 +65,21 @@ analytics, or error handling.
 - The route starts with the workflow's axe input and its generated GLB result
   prefilled.
 - Selecting an example updates the attachment and JSON input payload.
+- Selecting the Viking example replaces the result viewer and GLB download
+  with its matching supplied asset.
+- Selecting the Dragon example replaces the result viewer and GLB download
+  with its matching supplied asset.
 - Removing the active image leaves all three example choices available and
   requires the user to select or upload an image before running; reset restores
   the axe prefill.
 - The uploaded filename appears in the JSON input payload.
+- The desktop playground footer shows the credit estimate and reset action
+  without a run or sign-in CTA.
 - Prompt, video duration, aspect ratio, resolution, and seed controls are absent.
 - The result is an orbitable, zoomable GLB viewer with a GLB download action.
-- The bottom FAQ presents seven verified model, workflow, access, licensing,
-  output, and experience questions with native expandable disclosures and
-  matching FAQ structured data.
+- The bottom FAQ uses the shipped `FAQSplit01` story anatomy and presents ten
+  supplied product and model-specific questions with matching FAQ structured
+  data.
 - Upload controls have full-surface pointer and keyboard targets with visible
   hover and focus feedback.
 - The route remains `noindex` and behaves at desktop and narrow widths.
