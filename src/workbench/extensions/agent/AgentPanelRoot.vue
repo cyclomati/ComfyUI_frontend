@@ -25,7 +25,6 @@ import { validateComfyWorkflow } from '@/platform/workflow/validation/schemas/wo
 import type { LGraphCanvas, LGraphNode } from '@/lib/litegraph/src/litegraph'
 import { useAppMode } from '@/composables/useAppMode'
 import { MIME_ASSET_INFO } from '@/platform/assets/schemas/mediaAssetSchema'
-import { assetService } from '@/platform/assets/services/assetService'
 import {
   fetchDroppedAsset,
   getDroppedAsset,
@@ -178,10 +177,6 @@ watch(
   },
   { immediate: true }
 )
-
-function mentionableAssets() {
-  return assetService.getInputAssetsIncludingPublic()
-}
 
 let cloudIdsByName = new Map<string, string>()
 const availableWorkflowReferences = ref<WorkflowReference[]>([])
@@ -1245,7 +1240,6 @@ function onPanelDrop(event: DragEvent): void {
       :workflow-tabs="workflowTabs"
       :workflow-detached="workflowDetached"
       :get-mention-nodes="mentionableNodes"
-      :get-mention-assets="mentionableAssets"
       @select-tab="onSelectTab"
       @clear-workflow="onClearWorkflow"
       @send="onSend"
