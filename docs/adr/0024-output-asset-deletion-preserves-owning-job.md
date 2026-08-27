@@ -1,4 +1,4 @@
-# 24. Asset Deletion Preserves the Owning Job
+# 24. Output Asset Deletion Preserves the Owning Job
 
 Date: 2026-08-27
 
