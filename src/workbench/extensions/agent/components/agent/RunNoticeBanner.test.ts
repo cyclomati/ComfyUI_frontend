@@ -8,9 +8,10 @@ import RunNoticeBanner from './RunNoticeBanner.vue'
 
 const STORAGE_KEY = 'Comfy.AgentPanel.runNoticeDismissed'
 
-function mount(expanded = false) {
+function mount(workflowName = '3d_hunyuan-v2.1', expanded = false) {
   return render(RunNoticeBanner, {
     props: { expanded },
+    attrs: { workflowName },
     global: { plugins: [i18n] }
   })
 }
@@ -20,20 +21,20 @@ describe('RunNoticeBanner', () => {
     localStorage.clear()
   })
 
-  it('shows the run notice when it has not been dismissed', () => {
+  it('names the one workflow the agent can edit', () => {
     mount()
     expect(
       screen.getByText(
-        "The agent can modify the graph. You'll need to click run to execute the workflow."
+        'The agent can now edit 3d_hunyuan-v2.1. It works on 1 workflow at a time, and you can switch workflows during chat.'
       )
     ).not.toBeNull()
   })
 
   it('shows the expanded run notice in the maximized panel', () => {
-    mount(true)
+    mount('3d_hunyuan-v2.1', true)
     expect(
       screen.getByText(
-        "The agent can modify your workflow. You'll need to click run to execute."
+        'The agent can now edit 3d_hunyuan-v2.1. It works on 1 workflow at a time, and you can switch workflows during chat.'
       )
     ).not.toBeNull()
   })

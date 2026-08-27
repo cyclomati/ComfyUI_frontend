@@ -17,7 +17,12 @@ const historyGroups = {
 
 function mount(isMaximized = false) {
   return render(AgentPanel, {
-    props: { entries: [], historyGroups, isMaximized },
+    props: {
+      entries: [],
+      historyGroups,
+      isMaximized,
+      activeTab: { path: 'workflows/portrait.json', name: 'portrait' }
+    },
     global: {
       plugins: [i18n],
       stubs: {
@@ -34,12 +39,12 @@ describe('AgentPanel', () => {
     localStorage.clear()
   })
 
-  it('shows the minimized run notice and disclaimer by default', () => {
+  it('passes the editable workflow into the minimized run notice', () => {
     mount()
 
     expect(
       screen.getByText(
-        "The agent can modify the graph. You'll need to click run to execute the workflow."
+        'The agent can now edit portrait. It works on 1 workflow at a time, and you can switch workflows during chat.'
       )
     ).toBeInTheDocument()
     expect(
@@ -47,12 +52,12 @@ describe('AgentPanel', () => {
     ).toBeInTheDocument()
   })
 
-  it('shows the expanded run notice and disclaimer when maximized', () => {
+  it('passes the editable workflow into the expanded run notice', () => {
     mount(true)
 
     expect(
       screen.getByText(
-        "The agent can modify your workflow. You'll need to click run to execute."
+        'The agent can now edit portrait. It works on 1 workflow at a time, and you can switch workflows during chat.'
       )
     ).toBeInTheDocument()
     expect(
