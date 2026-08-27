@@ -151,7 +151,7 @@ function getFailedDownloadLabel(
           <span class="flex min-w-0 flex-col gap-2">
             <h3
               id="workflow-template-detail-cloud-title"
-              class="m-0 text-[13px]/[18px] font-medium"
+              class="m-0 text-sm/5 font-semibold"
             >
               {{
                 t(
