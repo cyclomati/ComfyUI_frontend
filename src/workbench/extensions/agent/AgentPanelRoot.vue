@@ -178,6 +178,7 @@ watch(
 
 const cloudWorkflowIndex = ref<WorkflowReference[]>([])
 const workflowReferences = ref<WorkflowReference[]>([])
+let cloudWorkflowRefreshGeneration = 0
 
 const cloudIdsByName = computed(() => {
   const nameCounts = new Map<string, number>()
@@ -192,12 +193,15 @@ const cloudIdsByName = computed(() => {
 })
 
 async function refreshCloudWorkflowIds(): Promise<void> {
+  const generation = ++cloudWorkflowRefreshGeneration
   try {
     const workflows = await rest.listCloudWorkflows()
+    if (generation !== cloudWorkflowRefreshGeneration) return
     cloudWorkflowIndex.value = workflows.flatMap(({ id, name }) =>
       name === undefined ? [] : [{ id, name }]
     )
   } catch (error) {
+    if (generation !== cloudWorkflowRefreshGeneration) return
     console.warn('[agent] could not refresh cloud workflow ids', error)
   }
 }
@@ -1240,6 +1244,7 @@ function onPanelDrop(event: DragEvent): void {
       @remove-tag="onRemoveSelectionTag"
       @mention-pick="onMentionPick"
       @workflow-reference-pick="addWorkflowReference"
+      @request-workflow-references="refreshCloudWorkflowIds"
       @remove-workflow-reference="removeWorkflowReference"
       @feedback="onFeedback"
       @new-chat="onNewChat"
