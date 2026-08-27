@@ -1229,10 +1229,15 @@
       "usedBy": "Used by {nodes}",
       "downloadRemaining": "{total} left",
       "openWithoutDownloading": "Open without downloading",
-      "downloadStarterPack": "Download starter pack",
+      "downloadStarterPack": "Download & open",
       "openTemplate": "Open template",
       "backToTemplates": "Back to {category}",
-      "breadcrumbLabel": "Template navigation"
+      "breadcrumbLabel": "Template navigation",
+      "downloadStarterPackWithSize": "Download & open ({size})",
+      "descriptionMore": "Show more",
+      "descriptionLess": "Show less",
+      "cloudUpsellShort": "No downloads needed",
+      "downloadFailedHint": "The download couldn't be completed. Use Retry to try again."
     },
     "sort": {
       "relevance": "Relevance",

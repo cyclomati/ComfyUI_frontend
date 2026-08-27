@@ -128,7 +128,7 @@ describe('WorkflowTemplateDetail', () => {
     expect(screen.getByRole('button', { name: 'Open template' })).toBeDisabled()
   })
 
-  it('offers Desktop model setup actions with the remaining download on the left', async () => {
+  it('offers Desktop model setup actions with the download size in the primary action', async () => {
     const user = userEvent.setup()
     const result = renderDetail({
       modelSetupEnabled: true,
@@ -136,12 +136,12 @@ describe('WorkflowTemplateDetail', () => {
       remainingDownload: '9.57 GB'
     })
 
-    expect(screen.getByText('9.57 GB left')).toBeInTheDocument()
+    expect(screen.queryByText('9.57 GB left')).not.toBeInTheDocument()
     await user.click(
       screen.getByRole('button', { name: 'Open without downloading' })
     )
     await user.click(
-      screen.getByRole('button', { name: 'Download starter pack' })
+      screen.getByRole('button', { name: 'Download & open (9.57 GB)' })
     )
 
     expect(result.emitted('open-template')).toEqual([[]])
@@ -158,7 +158,7 @@ describe('WorkflowTemplateDetail', () => {
     })
 
     expect(
-      screen.getByRole('button', { name: 'Download starter pack' })
+      screen.getByRole('button', { name: 'Download & open' })
     ).toBeDisabled()
     pending.unmount()
 
@@ -167,7 +167,7 @@ describe('WorkflowTemplateDetail', () => {
       screen.queryByRole('button', { name: 'Open without downloading' })
     ).not.toBeInTheDocument()
     expect(
-      screen.queryByRole('button', { name: 'Download starter pack' })
+      screen.queryByRole('button', { name: /Download & open/ })
     ).not.toBeInTheDocument()
     expect(screen.queryByText(/left$/i)).not.toBeInTheDocument()
     expect(
@@ -490,8 +490,8 @@ describe('WorkflowTemplateDetail', () => {
     })
     expect(pausedUnknown).not.toHaveAttribute('aria-valuenow')
     expect(pausedUnknown).toHaveAttribute('aria-valuetext', 'Paused')
-    expect(
-      screen.getByRole('status', { name: 'Downloaded' })
-    ).toHaveTextContent('Downloaded')
+    expect(screen.getByRole('status', { name: 'Installed' })).toHaveTextContent(
+      'Installed'
+    )
   })
 })

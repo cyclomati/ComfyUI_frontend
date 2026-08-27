@@ -352,12 +352,14 @@ describe('WorkflowTemplateSelectorDialog template detail navigation', () => {
       fixtures.prepared.workflow.models[0]
     ])
     expect(
-      screen.getByText('Checkpoint · 2 KB · Used by Starter Loader')
+      screen.getByText(
+        'wan2.2_i2v_high_noise_14B_fp16.safetensors · Used by Starter Loader'
+      )
     ).toBeInTheDocument()
 
     await user.click(
       screen.getByRole('button', {
-        name: 'Download wan2.2_i2v_high_noise_14B_fp16.safetensors'
+        name: 'Download Checkpoint · 2 KB'
       })
     )
     expect(mocks.rowDownloadRequest).toHaveBeenCalledWith(
@@ -391,11 +393,9 @@ describe('WorkflowTemplateSelectorDialog template detail navigation', () => {
   it('starts eligible Desktop model rows before immediately opening the stored workflow', async () => {
     environment.isDesktop = true
     const user = await openDetail()
-    await screen.findByRole('button', { name: 'Download starter pack' })
+    await screen.findByRole('button', { name: /Download & open/ })
 
-    await user.click(
-      screen.getByRole('button', { name: 'Download starter pack' })
-    )
+    await user.click(screen.getByRole('button', { name: /Download & open/ }))
 
     await waitFor(() => {
       expect(mocks.openPreparedWorkflowTemplate).toHaveBeenCalledOnce()
@@ -524,7 +524,7 @@ describe('WorkflowTemplateSelectorDialog template detail navigation', () => {
         screen.getByRole('button', { name: 'Open without downloading' })
       ).toBeEnabled()
       expect(
-        screen.queryByRole('button', { name: 'Download starter pack' })
+        screen.queryByRole('button', { name: /Download & open/ })
       ).not.toBeInTheDocument()
     }
   )
@@ -594,7 +594,7 @@ describe('WorkflowTemplateSelectorDialog template detail navigation', () => {
     })
     expect(
       within(requirements).getByText(
-        'wan2.2_i2v_high_noise_14B_fp16.safetensors'
+        /wan2\.2_i2v_high_noise_14B_fp16\.safetensors/
       )
     ).toBeInTheDocument()
   })
