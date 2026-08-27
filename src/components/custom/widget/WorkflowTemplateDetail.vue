@@ -177,7 +177,7 @@ function getFailedDownloadLabel(
             target="_blank"
             rel="noopener noreferrer"
             variant="secondary"
-            size="md"
+            size="lg"
             class="w-full text-base-foreground no-underline"
           >
             {{ t('templateWorkflows.detail.openInCloud') }}
