@@ -15,9 +15,13 @@ import type { AssetItem } from '@/platform/assets/schemas/assetSchema'
 import { useAgentRunModeStore } from '../../stores/agent/agentRunModeStore'
 import Composer from './Composer.vue'
 
-function mount(props: ComponentProps<typeof Composer> = {}) {
+function mount(
+  props: ComponentProps<typeof Composer> = {},
+  attrs: Record<string, unknown> = {}
+) {
   return render(Composer, {
     props,
+    attrs,
     global: {
       plugins: [PrimeVue, i18n],
       directives: { tooltip: Tooltip }
@@ -510,8 +514,65 @@ describe('Composer', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Add to prompt' }))
     // Anchor on the entry that is always present, so the absence assertions
     // below cannot pass against a menu that never opened.
-    return screen.findByRole('menuitem', { name: 'Add nodes from graph' })
+    return screen.findByRole('menuitem', { name: 'Nodes' })
   }
+
+  it('separates node and workflow references in the add menu', async () => {
+    mount()
+
+    await openAddMenu()
+
+    expect(screen.getByRole('menuitem', { name: 'Nodes' })).toBeVisible()
+    expect(screen.getByRole('menuitem', { name: 'Workflows' })).toBeVisible()
+  })
+
+  it('lists only eligible workflows and emits the selected reference', async () => {
+    const { emitted } = mount(
+      {},
+      {
+        availableWorkflows: [
+          { id: 'wf-edit', name: 'Editable workflow' },
+          { id: 'wf-selected', name: 'Already selected' },
+          { id: 'wf-eligible', name: 'Water world' }
+        ],
+        workflowReferences: [{ id: 'wf-selected', name: 'Already selected' }],
+        editableWorkflowId: 'wf-edit'
+      }
+    )
+
+    await openAddMenu()
+    await userEvent.click(screen.getByRole('menuitem', { name: 'Workflows' }))
+
+    expect(
+      screen.queryByRole('menuitem', { name: 'Editable workflow' })
+    ).toBeNull()
+    expect(
+      screen.queryByRole('menuitem', { name: 'Already selected' })
+    ).toBeNull()
+    await userEvent.click(
+      await screen.findByRole('menuitem', { name: 'Water world' })
+    )
+
+    expect(emitted().workflowReferencePick).toEqual([
+      [{ id: 'wf-eligible', name: 'Water world' }]
+    ])
+  })
+
+  it('renders and removes a selected workflow reference chip', async () => {
+    const { emitted } = mount(
+      {},
+      {
+        workflowReferences: [{ id: 'wf-1', name: 'Water world' }]
+      }
+    )
+
+    expect(screen.getByText('Water world')).toBeVisible()
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Remove Water world reference' })
+    )
+
+    expect(emitted().removeWorkflowReference).toEqual([['wf-1']])
+  })
 
   it('hides the conditional entries from the add menu by default', async () => {
     mount()
