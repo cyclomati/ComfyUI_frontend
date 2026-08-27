@@ -53,6 +53,7 @@ import {
   useAttachment
 } from './composables/agent/useAttachment'
 import type { ActiveTab } from './types/activeTab'
+import type { WorkflowReference } from './types/workflowReference'
 import type { SelectedNode } from './composables/agent/useCanvasSelection'
 import {
   selectedNodeKey,
@@ -183,10 +184,15 @@ function mentionableAssets() {
 }
 
 let cloudIdsByName = new Map<string, string>()
+const availableWorkflowReferences = ref<WorkflowReference[]>([])
+const workflowReferences = ref<WorkflowReference[]>([])
 
 async function refreshCloudWorkflowIds(): Promise<void> {
   try {
     const workflows = await rest.listCloudWorkflows()
+    availableWorkflowReferences.value = workflows.flatMap(({ id, name }) =>
+      name === undefined ? [] : [{ id, name }]
+    )
     const nameCounts = new Map<string, number>()
     for (const { name } of workflows) {
       if (name !== undefined)
@@ -255,6 +261,24 @@ const activeTab = computed<ActiveTab | null>(() => {
       }
     : null
 })
+
+const editableWorkflowId = computed(() => {
+  if (workflowDetached.value) return undefined
+  const active = workflowStore.activeWorkflow
+  return active ? cloudIdFor(active) : undefined
+})
+
+function addWorkflowReference(workflow: WorkflowReference): void {
+  if (workflow.id === editableWorkflowId.value) return
+  if (workflowReferences.value.some(({ id }) => id === workflow.id)) return
+  workflowReferences.value = [...workflowReferences.value, workflow]
+}
+
+function removeWorkflowReference(id: string): void {
+  workflowReferences.value = workflowReferences.value.filter(
+    (workflow) => workflow.id !== id
+  )
+}
 
 const workflowTabs = computed<ActiveTab[]>(() =>
   workflowStore.openWorkflows.map((tab) => ({
@@ -838,15 +862,20 @@ const coachStep: CoachStep = {
   body: t('agent.coachBody')
 }
 
-function onSend(text: string, attachments: ComposerAttachment[]): void {
+function onSend(
+  text: string,
+  attachments: ComposerAttachment[],
+  references: WorkflowReference[] = []
+): void {
   exitNodeSelectionMode()
   void applyDraft()
   const nodeTags = consumeSelection()
+  workflowReferences.value = []
   useTelemetry()?.trackAgentMessageSent({
     attachment_count: attachments.length,
     node_tag_count: nodeTags.length
   })
-  void sendMessage(text, attachments, nodeTags).then((ok) => {
+  void sendMessage(text, attachments, nodeTags, references).then((ok) => {
     if (!ok) resetSnapshotGuard()
   })
 }
@@ -873,6 +902,7 @@ function onNewChat(): void {
   exitNodeSelectionMode()
   resetSnapshotGuard()
   workflowDetached.value = true
+  workflowReferences.value = []
   newChat()
 }
 
@@ -1208,6 +1238,9 @@ function onPanelDrop(event: DragEvent): void {
       :session-id="threadId"
       :custom-title="history.titleFor(threadId)"
       :selection-tags="selectionTags"
+      :workflow-references="workflowReferences"
+      :available-workflows="availableWorkflowReferences"
+      :editable-workflow-id="editableWorkflowId"
       :active-tab="activeTab"
       :workflow-tabs="workflowTabs"
       :workflow-detached="workflowDetached"
@@ -1223,6 +1256,8 @@ function onPanelDrop(event: DragEvent): void {
       @remove-tag="onRemoveSelectionTag"
       @focus-tag="onFocusSelectionTag"
       @mention-pick="onMentionPick"
+      @workflow-reference-pick="addWorkflowReference"
+      @remove-workflow-reference="removeWorkflowReference"
       @feedback="onFeedback"
       @new-chat="onNewChat"
       @toggle-size="agentPanelStore.toggleMaximize()"
