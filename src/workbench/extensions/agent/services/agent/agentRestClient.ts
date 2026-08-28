@@ -3,6 +3,7 @@ import type { z } from 'zod'
 import { api } from '@/scripts/api'
 
 import {
+  zAgentAnswerAccepted,
   zAgentCancelAccepted,
   zAgentDraftSnapshot,
   zAgentError,
@@ -13,6 +14,7 @@ import {
   zUploadImageResult
 } from '../../schemas/agentApiSchema'
 import type {
+  AgentAnswerAccepted,
   AgentCancelAccepted,
   AgentDraftSnapshot,
   AgentMessages,
@@ -180,6 +182,18 @@ export function createAgentRestClient() {
     )
   }
 
+  async function answerAsk(
+    threadId: string,
+    askId: string,
+    selected: string[]
+  ): Promise<AgentAnswerAccepted> {
+    return request(
+      `/agent/threads/${threadId}/asks/${encodeURIComponent(askId)}/answer`,
+      jsonInit('POST', { selected }),
+      zAgentAnswerAccepted
+    )
+  }
+
   async function getDraft(workflowId: string): Promise<AgentDraftSnapshot> {
     const query = encodeURIComponent(workflowId)
     return request(
@@ -208,6 +222,7 @@ export function createAgentRestClient() {
     listThreads,
     listCloudWorkflows,
     cancelMessage,
+    answerAsk,
     getDraft,
     uploadImage
   }

@@ -271,15 +271,13 @@ export const useAgentConversationStore = defineStore(
             ]
           if (
             row.status === 'streaming' &&
-            row.pending_ask?.kind === 'run_approval' &&
-            row.pending_ask.context?.workflow_id &&
-            row.pending_ask.context.workflow_name
+            row.pending_ask?.kind === 'run_approval'
           ) {
             message.parts.push({
               type: 'runApproval',
               askId: row.pending_ask.ask_id,
-              workflowId: row.pending_ask.context.workflow_id,
-              workflowName: row.pending_ask.context.workflow_name
+              workflowId: row.pending_ask.context?.workflow_id || undefined,
+              workflowName: row.pending_ask.context?.workflow_name || undefined
             })
             message.streaming = true
             pending = {

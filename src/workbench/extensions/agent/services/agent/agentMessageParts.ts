@@ -39,8 +39,8 @@ export interface TabLinkPart {
 export interface RunApprovalPart {
   type: 'runApproval'
   askId: string
-  workflowId: string
-  workflowName: string
+  workflowId?: string
+  workflowName?: string
 }
 
 export type ActivityPart = ThinkingPart | ToolPart
