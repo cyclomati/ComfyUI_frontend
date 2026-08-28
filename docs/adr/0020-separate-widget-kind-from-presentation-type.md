@@ -10,16 +10,19 @@ Proposed
 
 ## Context
 
-[ADR 0008](0008-entity-component-system.md) classifies a widget's `name` and
-`type` as identity, and makes dedicated stores authoritative for widget data.
+[ADR 0008](0008-entity-component-system.md) defines
+`WidgetId = graphId:nodeId:name` as the single canonical widget identity and
+makes dedicated stores authoritative for widget data. A widget's `type`
+instead describes aspects of its semantic and presentation contracts.
 The extension API predates that model: `IBaseWidget.type` is a public writable
 property, and custom nodes change it after registration to select a different
 renderer or interaction model.
 
-Those meanings conflict. A semantic identity should be stable after registration
-so indexes, serialization, projections, and systems can rely on it. Renderer
-selection is presentation state and may legitimately change during a widget's
-lifetime. Using one string for both creates two failure modes:
+Those contracts conflict. Semantic classification should be stable after
+registration so validation, connection compatibility, reconstruction, and
+systems can rely on it. Renderer selection is presentation state and may
+legitimately change during a widget's lifetime. Using one string for both
+creates two failure modes:
 
 - Treating `type` as immutable breaks extensions that use post-registration
   assignment as a presentation switch.
@@ -30,8 +33,8 @@ lifetime. Using one string for both creates two failure modes:
 PR [#15766](https://github.com/Comfy-Org/ComfyUI_frontend/pull/15766) is a
 compatibility repair: after registration, legacy `widget.type = value` writes
 through to the widget state used by Vue component dispatch. It removes the
-immediate split-brain behavior, but retaining a mutable identity field is not the
-desired long-term API.
+immediate split-brain behavior, but retaining one mutable field for semantic
+classification and presentation dispatch is not the desired long-term API.
 
 The migration also has to account for widgets that exist only as projections,
 including promoted subgraph widgets, and for extensions compiled against the
@@ -42,10 +45,12 @@ property.
 
 ## Decision
 
-Separate semantic widget identity from presentation dispatch:
+Separate semantic widget classification from presentation dispatch:
 
-1. Add an immutable `kind` to widget state. `kind` identifies the widget's
-   semantic contract and is fixed when the widget is registered.
+1. Add an immutable `kind` to widget state. `kind` defines the widget's value,
+   validation, connection compatibility, and reconstruction contract. It is not
+   widget identity; [ADR 0008](0008-entity-component-system.md) reserves that
+   role for `WidgetId`. `kind` is fixed when the widget is registered.
 2. Add a store-backed `presentationType`. Vue component selection and other
    presentation behavior use this field. It may change through a validated widget
    store action and, once widget commands are available, through the corresponding
@@ -56,9 +61,12 @@ Separate semantic widget identity from presentation dispatch:
    `presentationType`; writes never mutate `kind`.
 4. Emit a development-mode deprecation warning for post-registration `type`
    assignment, with migration guidance to the explicit presentation API.
-5. Store-driven consumers read `kind` or `presentationType` according to their
-   purpose. They do not fall back to the live widget object. Live widgets and
-   promoted-widget adapters project the same authoritative store state.
+5. Value coercion, validation, connection compatibility, type narrowing, and
+   reconstruction read `kind`. Renderer lookup reads `presentationType`.
+   Visibility is not assigned to either field by this ADR and requires an
+   explicit decision before migration. Store-driven consumers do not fall back
+   to the live widget object. Live widgets and promoted-widget adapters project
+   the same authoritative store state.
 6. Serialization records `kind` wherever semantic reconstruction requires it.
    `presentationType` is serialized only when changing presentation is persistent
    workflow state rather than an ephemeral UI choice. Each mutable presentation
@@ -67,7 +75,8 @@ Separate semantic widget identity from presentation dispatch:
    evidence show that supported extensions have migrated.
 
 The initial names are deliberately distinct from the overloaded legacy name:
-`kind` answers "what widget contract is this?" and `presentationType` answers
+`kind` answers "what value and behavior contract does this widget implement?"
+and `presentationType` answers
 "how should it be presented now?"
 
 Alternatives considered:
@@ -90,9 +99,10 @@ Alternatives considered:
 
 ### Positive
 
-- Widget identity becomes stable and suitable for indexing, reconstruction, and
-  deterministic commands.
-- Dynamic renderer changes remain supported without mutating identity.
+- Widget semantic classification becomes stable and suitable for validation,
+  connection compatibility, reconstruction, and deterministic commands.
+- Dynamic renderer changes remain supported without mutating that semantic
+  classification.
 - Vue, legacy adapters, and promoted widgets observe one authoritative reactive
   value instead of applying consumer-specific fallback rules.
 - The deprecated property provides a staged migration path for custom nodes rather
@@ -121,5 +131,5 @@ Alternatives considered:
   dedicated-store authority this proposal refines.
 - [ADR 0003](0003-crdt-based-layout-system.md) defines the longer-term command
   properties required for durable graph-domain mutations.
-- The compatibility repair in PR #15766 should not be interpreted as making
-  mutable widget identity permanent.
+- The compatibility repair in PR #15766 should not be interpreted as making one
+  mutable field for semantic classification and presentation permanent.
