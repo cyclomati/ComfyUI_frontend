@@ -80,6 +80,12 @@ export interface StartOperationMetadata {
   checkoutAttemptId?: string
   flagState?: BillingFlagState
   quoteId?: string
+  /**
+   * The workspace the attempt started in, for telemetry only. `workspaceId`
+   * below is read live to gate UI against the workspace the customer is
+   * looking at now; this is the one they were subscribing for (ADR 0014).
+   */
+  attemptWorkspaceId?: string | null
 }
 
 interface BillingOperation {
@@ -105,6 +111,7 @@ interface BillingOperation {
   checkoutAttemptId?: string
   flagState: BillingFlagState
   quoteId?: string
+  attemptWorkspaceId?: string | null
 }
 
 type TerminalResolver = (operation: BillingOperation) => void
@@ -211,21 +218,27 @@ export const useBillingOperationStore = defineStore('billingOperation', () => {
   }
 
   function operationTelemetryContext(operation: BillingOperation) {
+    const workspaceId = operation.attemptWorkspaceId ?? operation.workspaceId
     return {
       ...(operation.checkoutAttemptId && {
         checkout_attempt_id: operation.checkoutAttemptId
       }),
       flag_state: operation.flagState,
-      ...(operation.workspaceId && { workspace_id: operation.workspaceId }),
+      ...(workspaceId && { workspace_id: workspaceId }),
       ...(operation.quoteId && { quote_id: operation.quoteId })
     }
   }
 
   /**
-   * `authenticationRequiredSeen` is a latch, so this is the denominator for
-   * "attempts that hit a challenge" — one per operation, however many times the
-   * customer retries. Pair it with `challenge_returned` per operation, not per
-   * event: a manual retry emits a second return against this one presentation.
+   * The denominator for "attempts that hit a challenge" — latched to one per
+   * operation, however many times the customer retries. Pair it with
+   * `challenge_returned` per operation, not per event: a manual retry emits a
+   * second return against this one presentation.
+   *
+   * Driven by an `authentication_state` of `requires_action`, never by
+   * `actionUrl`: a `needs_payment_method` response puts a payment-method
+   * collection page in `actionUrl` too, and counting that as a challenge would
+   * both inflate this denominator and latch out the real 3DS presentation.
    */
   function trackChallengePresented(opId: string) {
     const operation = operations.value.get(opId)
@@ -284,7 +297,8 @@ export const useBillingOperationStore = defineStore('billingOperation', () => {
       flagState:
         metadata?.flagState ??
         resolveBillingFlagState(flags.embeddedCheckoutEnabled),
-      quoteId: metadata?.quoteId
+      quoteId: metadata?.quoteId,
+      attemptWorkspaceId: metadata?.attemptWorkspaceId
     }
 
     operations.value = new Map(operations.value).set(opId, operation)
@@ -300,8 +314,6 @@ export const useBillingOperationStore = defineStore('billingOperation', () => {
         ...operationTelemetryContext(operation)
       })
     }
-
-    if (operation.authenticationRequiredSeen) trackChallengePresented(opId)
 
     if (type !== 'cancel' && !metadata?.suppressProcessingToast) {
       showProgressToast(opId, type, operation.actionUrl !== null)

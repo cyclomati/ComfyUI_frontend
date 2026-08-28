@@ -1378,6 +1378,7 @@ export function useSubscriptionCheckout(
         attemptStartedAt: context.attemptStartedAt,
         checkoutAttemptId: activeCheckoutAttemptId,
         flagState: activeCheckoutFlagState,
+        attemptWorkspaceId: activeCheckoutWorkspaceId,
         quoteId: previewData.value?.quote_id,
         ...(embeddedCheckoutEnabled && {
           suppressProcessingToast: true,
@@ -1535,6 +1536,11 @@ export function useSubscriptionCheckout(
     if (!canReactivatePlan.value) return
 
     const source = 'pricing_dialog' as const
+
+    // A reactivation is its own attempt: without this it would inherit the id
+    // of whatever checkout ran earlier in the dialog, and a retry after a
+    // failed reactivation would emit a second started/terminal pair under it.
+    beginCheckoutAttempt()
 
     telemetry?.trackResubscribeClicked({
       source,
