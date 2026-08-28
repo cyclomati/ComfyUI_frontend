@@ -103,7 +103,7 @@
 </template>
 
 <script setup lang="ts">
-import { useScroll } from '@vueuse/core'
+import { useMutationObserver, useScroll } from '@vueuse/core'
 import ScrollPanel from 'primevue/scrollpanel'
 import SelectButton from 'primevue/selectbutton'
 import {
@@ -262,12 +262,18 @@ let overflowObserver: ReturnType<typeof useOverflowObserver> | null = null
 let stopArrivedWatch: WatchStopHandle | null = null
 let stopOverflowWatch: WatchStopHandle | null = null
 
-onMounted(() => {
-  const el = containerRef.value?.querySelector<HTMLElement>(
-    '.p-scrollpanel-content'
-  )
-  if (!el) return
+const bindScrollContent = () => {
+  const el =
+    containerRef.value?.querySelector<HTMLElement>('.p-scrollpanel-content') ??
+    null
+  if (el === scrollContent.value) return
+
+  stopArrivedWatch?.()
+  stopOverflowWatch?.()
+  overflowObserver?.dispose()
+
   scrollContent.value = el
+  if (!el) return
 
   const scrollState = useScroll(el)
 
@@ -294,6 +300,12 @@ onMounted(() => {
     },
     { immediate: true }
   )
+}
+
+onMounted(bindScrollContent)
+useMutationObserver(containerRef, bindScrollContent, {
+  childList: true,
+  subtree: true
 })
 
 onBeforeUnmount(() => {
@@ -303,6 +315,7 @@ onBeforeUnmount(() => {
 })
 
 onUpdated(() => {
+  bindScrollContent()
   if (!overflowObserver?.disposed.value) {
     overflowObserver?.checkOverflow()
   }
