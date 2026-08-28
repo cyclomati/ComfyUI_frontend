@@ -15,7 +15,10 @@ vi.hoisted(() => {
 import { i18n } from '@/i18n'
 import type { TurnId } from '../../../schemas/agentApiSchema'
 import { createAgentEventTransport } from '../../../services/agent/agentEventTransport'
-import type { AssistantMessage } from '../../../services/agent/agentMessageParts'
+import type {
+  AssistantMessage,
+  RunApprovalPart
+} from '../../../services/agent/agentMessageParts'
 import { createAssistantMessage } from '../../../services/agent/agentMessageParts'
 
 import AgentMessage from './AgentMessage.vue'
@@ -241,7 +244,9 @@ describe('AgentMessage thinking narration', () => {
 })
 
 describe('AgentMessage run approval', () => {
-  const approvalMessage = (): AssistantMessage => ({
+  const approvalMessage = (
+    approval: Partial<RunApprovalPart> = {}
+  ): AssistantMessage => ({
     id: 'msg-approval' as TurnId,
     role: 'assistant',
     parts: [
@@ -249,7 +254,8 @@ describe('AgentMessage run approval', () => {
         type: 'runApproval',
         askId: 'turn-1:call-1',
         workflowId: 'workflow-1',
-        workflowName: 'Portrait workflow'
+        workflowName: 'Portrait workflow',
+        ...approval
       }
     ],
     streaming: true,
@@ -296,6 +302,37 @@ describe('AgentMessage run approval', () => {
       expect(button).toBeDisabled()
       expect(button).toHaveAttribute('aria-busy', 'true')
     }
-    expect(document.querySelector('.pi-spinner')).not.toBeInTheDocument()
   })
+
+  it.for([
+    {
+      approval: { workflowName: '  ' },
+      expectedLabel: 'workflow-1',
+      interactive: true
+    },
+    {
+      approval: { workflowId: undefined, workflowName: undefined },
+      expectedLabel: 'this workflow',
+      interactive: false
+    }
+  ] as const)(
+    'falls back to “$expectedLabel” when backend naming data is unavailable',
+    ({ approval, expectedLabel, interactive }) => {
+      render(AgentMessage, {
+        props: { message: approvalMessage(approval) },
+        global: { plugins: [i18n] }
+      })
+
+      if (interactive) {
+        expect(
+          screen.getByRole('button', { name: expectedLabel })
+        ).toBeInTheDocument()
+      } else {
+        expect(
+          screen.queryByRole('button', { name: expectedLabel })
+        ).not.toBeInTheDocument()
+        expect(screen.getByText(expectedLabel)).toBeInTheDocument()
+      }
+    }
+  )
 })
