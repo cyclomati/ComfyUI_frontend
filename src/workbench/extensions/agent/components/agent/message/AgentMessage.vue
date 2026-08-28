@@ -18,20 +18,20 @@ import AgentPaywallCard from './AgentPaywallCard.vue'
 import MessageFeedback from './MessageFeedback.vue'
 import TabLinkCard from './TabLinkCard.vue'
 import ToolCallGroup from './ToolCallGroup.vue'
+import { DEFAULT_AGENT_PAYWALL_PRESENTATION } from '../../../services/agent/agentPaywallPresentation'
+import type {
+  AgentPaywallAction,
+  AgentPaywallPresentation
+} from '../../../services/agent/agentPaywallPresentation'
 
-const {
-  message,
-  showAddCredits = true,
-  showUpgrade = true
-} = defineProps<{
-  message: AssistantMessage
-  showAddCredits?: boolean
-  showUpgrade?: boolean
-}>()
+const { message, paywallPresentation = DEFAULT_AGENT_PAYWALL_PRESENTATION } =
+  defineProps<{
+    message: AssistantMessage
+    paywallPresentation?: AgentPaywallPresentation
+  }>()
 const emit = defineEmits<{
   feedback: [vote: 'up' | 'down' | null]
-  addCredits: []
-  upgradeSubscription: []
+  paywallAction: [action: AgentPaywallAction]
 }>()
 
 type Group =
@@ -104,10 +104,8 @@ const hasTools = computed(() =>
       </div>
       <AgentPaywallCard
         v-else-if="group.kind === 'paywall'"
-        :show-add-credits="showAddCredits"
-        :show-upgrade="showUpgrade"
-        @add-credits="emit('addCredits')"
-        @upgrade-subscription="emit('upgradeSubscription')"
+        :presentation="paywallPresentation"
+        @paywall-action="emit('paywallAction', $event)"
       />
       <div
         v-else

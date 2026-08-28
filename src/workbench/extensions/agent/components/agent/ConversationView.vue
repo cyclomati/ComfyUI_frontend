@@ -7,6 +7,11 @@ import { buildAgentTooltipConfig } from '@/composables/useTooltipConfig'
 
 import { cn } from '@comfyorg/tailwind-utils'
 
+import { DEFAULT_AGENT_PAYWALL_PRESENTATION } from '../../services/agent/agentPaywallPresentation'
+import type {
+  AgentPaywallAction,
+  AgentPaywallPresentation
+} from '../../services/agent/agentPaywallPresentation'
 import type { ConversationEntry } from '../../stores/agent/agentConversationStore'
 import type { TurnId } from '../../schemas/agentApiSchema'
 
@@ -15,20 +20,17 @@ import UserMessage from './message/UserMessage.vue'
 
 const {
   entries,
-  showPaywallAddCredits = true,
-  showPaywallUpgrade = true,
+  paywallPresentation = DEFAULT_AGENT_PAYWALL_PRESENTATION,
   editableTurnId = null
 } = defineProps<{
   entries: ConversationEntry[]
-  showPaywallAddCredits?: boolean
-  showPaywallUpgrade?: boolean
+  paywallPresentation?: AgentPaywallPresentation
   editableTurnId?: TurnId | null
 }>()
 const emit = defineEmits<{
   feedback: [turnId: string, vote: 'up' | 'down' | null]
   editPrompt: [text: string]
-  addCredits: []
-  upgradeSubscription: []
+  paywallAction: [action: AgentPaywallAction]
 }>()
 
 const { t } = useI18n()
@@ -95,11 +97,9 @@ watch(
             <AgentMessage
               v-else
               :message="entry"
-              :show-add-credits="showPaywallAddCredits"
-              :show-upgrade="showPaywallUpgrade"
+              :paywall-presentation="paywallPresentation"
               @feedback="emit('feedback', entry.id, $event)"
-              @add-credits="emit('addCredits')"
-              @upgrade-subscription="emit('upgradeSubscription')"
+              @paywall-action="emit('paywallAction', $event)"
             />
           </template>
           <div ref="bottom" />
