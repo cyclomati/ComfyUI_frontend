@@ -1,4 +1,4 @@
-# 13. Telemetry Service Selection: PostHog, Datadog RUM, Snowflake/Hex
+# ADR-TSS: Telemetry Service Selection: PostHog, Datadog RUM, Snowflake/Hex
 
 Date: 2026-07-28
 
@@ -6,7 +6,7 @@ Date: 2026-07-28
 
 Accepted
 
-<!-- [Proposed | Accepted | Rejected | Deprecated | Superseded by [ADR-NNNN](NNNN-title.md)] -->
+<!-- [Proposed | Accepted | Rejected | Deprecated | Superseded by [ADR-ACRONYM](ACRONYM-title.md)] -->
 
 ## Context
 

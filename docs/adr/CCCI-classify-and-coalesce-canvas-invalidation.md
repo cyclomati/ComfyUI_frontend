@@ -1,4 +1,4 @@
-# 21. Classify and Coalesce Canvas Invalidation
+# ADR-CCCI: Classify and Coalesce Canvas Invalidation
 
 Date: 2026-08-26
 
@@ -114,7 +114,7 @@ Specifically:
 
 ## Notes
 
-This decision complements [ADR 0020](0020-bound-renderer-reactivity.md). The
+This decision complements [ADR-BRR](BRR-bound-renderer-reactivity.md). The
 unchanged-progress work and its deterministic complexity proofs are tracked in
 [PR #15999](https://github.com/Comfy-Org/ComfyUI_frontend/pull/15999) and its
 follow-up [PR #16015](https://github.com/Comfy-Org/ComfyUI_frontend/pull/16015).

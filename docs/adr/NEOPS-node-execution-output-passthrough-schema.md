@@ -1,4 +1,4 @@
-# 7. NodeExecutionOutput Passthrough Schema Design
+# ADR-NEOPS: NodeExecutionOutput Passthrough Schema Design
 
 Date: 2026-03-11
 

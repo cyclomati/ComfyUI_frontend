@@ -1,4 +1,4 @@
-# 5. Remove Import Map for Vue Extensions
+# ADR-RIMVE: Remove Import Map for Vue Extensions
 
 Date: 2025-12-13
 

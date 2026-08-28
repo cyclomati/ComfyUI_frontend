@@ -1,4 +1,4 @@
-# 6. PrimitiveNode Copy/Paste Lifecycle
+# ADR-PNCPL: PrimitiveNode Copy/Paste Lifecycle
 
 Date: 2026-02-22
 

@@ -1,4 +1,4 @@
-# 14. Billing Telemetry Attempt Correlation and Workspace Scoping
+# ADR-BTACWS: Billing Telemetry Attempt Correlation and Workspace Scoping
 
 Date: 2026-07-28
 
