@@ -1,3 +1,5 @@
+import { existsSync, readFileSync } from 'node:fs'
+
 import { defineConfig } from 'astro/config'
 import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
@@ -23,6 +25,44 @@ const SITEMAP_EXCLUDED_PATHNAMES = new Set([
 const SITEMAP_EXCLUDED_PREFIXES = LOCALE_PREFIXES.map(
   (prefix) => `${prefix}/models-v2`
 )
+const PIXAL3D_TEST_CONFIG_URL = new URL(
+  './pixal3d_api.cfg.local',
+  import.meta.url
+)
+
+function getPixal3dTestProxy() {
+  if (!existsSync(PIXAL3D_TEST_CONFIG_URL)) return undefined
+
+  const config = Object.fromEntries(
+    readFileSync(PIXAL3D_TEST_CONFIG_URL, 'utf8')
+      .split(/\r?\n/)
+      .flatMap((line) => {
+        const separator = line.indexOf('=')
+        if (separator < 1) return []
+        const name = line.slice(0, separator).trim()
+        const value = line
+          .slice(separator + 1)
+          .trim()
+          .replace(/^(['"])(.*)\1$/, '$2')
+        return [[name, value]]
+      })
+  )
+  const host = config.host
+  const apiKey = config.api_key
+  if (!host || !apiKey) {
+    throw new Error('Pixal3D test config requires host and api_key')
+  }
+
+  return {
+    '/pixal3d-api': {
+      target: host,
+      changeOrigin: true,
+      followRedirects: true,
+      headers: { Authorization: `Bearer ${apiKey}` },
+      rewrite: (path: string) => path.replace(/^\/pixal3d-api/, '')
+    }
+  }
+}
 
 function isExcludedFromSitemap(page: string): boolean {
   const pathname = new URL(page).pathname.replace(/\/$/, '')
@@ -65,6 +105,7 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
     server: {
+      proxy: getPixal3dTestProxy(),
       watch: {
         ignored: ['**/playwright-report/**']
       }

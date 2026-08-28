@@ -80,6 +80,9 @@ dist.zip
 # Temporary repository directory
 templates_repo/
 
+# Local Comfy API test credentials
+/apps/website/public/assets/models-v2/pixal3d-trellis2/pixal3d_api.cfg
+
 # Vite's timestamped config modules
 vite.config.mts.timestamp-*.mjs
 

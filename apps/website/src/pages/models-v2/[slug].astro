@@ -10,6 +10,8 @@ import { cn } from '@comfyorg/tailwind-utils'
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import { ArrowRight, Coins as CreditsIcon, Download as DownloadIcon, X as RemoveIcon } from '@lucide/vue'
 
+import type { LaunchModel } from '../../config/models-v2-demo'
+
 import FAQSplit01 from '../../components/blocks/FAQSplit01.vue'
 import BrandButton from '../../components/common/BrandButton.vue'
 import GlassCard from '../../components/common/GlassCard.vue'
@@ -22,8 +24,7 @@ import {
   modalityMeta,
   dirLabel,
   fallbackImg,
-  proxyImg,
-  type LaunchModel
+  proxyImg
 } from '../../config/models-v2-demo'
 import Breadcrumbs from '../../components/common/Breadcrumbs.astro'
 import { buttonVariants } from '../../components/ui/button'
@@ -93,7 +94,7 @@ const imageTo3dExamples = isImageTo3d
           'https://raw.githubusercontent.com/Comfy-Org/workflow_templates/refs/heads/main/input/viking_wolf_rune_axe.png',
         alt: 'Viking wolf rune axe example input',
         modelUrl:
-          '/assets/models-v2/pixal3d-trellis2/viking_wolf_rune_axe-preview.glb'
+          '/assets/models-v2/pixal3d-trellis2/viking-wolf-rune-axe.glb'
       },
       {
         label: 'Viking',
@@ -554,6 +555,7 @@ const faqJsonLd = {
             </div>
           )}
           <p id="image-error" class="mt-2 hidden text-xs text-primary-comfy-orange" role="alert">Add an image before running the workflow.</p>
+          <p id="run-error" class="mt-2 hidden text-xs text-primary-comfy-orange" role="alert"></p>
         </div>
 
         <!-- JSON VIEW -->
@@ -578,6 +580,7 @@ const faqJsonLd = {
           </span>
           <div class="flex items-center gap-3">
             <BrandButton id="pg-reset" variant="outline" size="xs" class="uppercase tracking-widest">Reset</BrandButton>
+            <BrandButton id="pg-run-desktop" variant="solid" size="xs" class="uppercase tracking-widest">Run — ~{baseCredits} credits</BrandButton>
           </div>
         </div>
       </div>
@@ -624,8 +627,8 @@ const faqJsonLd = {
           <div id="running-overlay" class="absolute inset-0 hidden flex-col items-center justify-center gap-4 bg-primary-comfy-ink/95 px-8 text-center">
             <p class={sectionTitle}>Restored your {isImageTo3d ? 'image' : 'prompt and settings'} ✓</p>
             <p class="text-lg font-semibold text-primary-warm-white">Running the graph</p>
-            <div class="h-1.5 w-56 overflow-hidden rounded-full bg-white/10 sm:w-72">
-              <div id="progress-fill" class="h-full w-0 rounded-full bg-primary-comfy-yellow transition-[width] duration-[2200ms] ease-out"></div>
+            <div class="h-2 w-56 overflow-hidden rounded-full bg-transparency-white-t20 sm:w-72">
+              <div id="progress-fill" class="h-full w-0 rounded-full bg-primary-comfy-yellow transition-[width] duration-300 ease-out"></div>
             </div>
             <p class="font-mono text-2xs text-primary-warm-gray">ksampler · queue position 1</p>
           </div>
@@ -652,7 +655,7 @@ const faqJsonLd = {
         </div>
         <div id="result-meta" class="flex max-w-full flex-wrap items-center gap-2 pt-3">
           {isImageTo3d
-            ? <><span class:list={[pill, pillMuted]}>Textured GLB</span><span class:list={[pill, pillMuted]}>Viking axe example output</span></>
+            ? <><span class:list={[pill, pillMuted]}>Textured GLB</span><span id="result-output-name" class:list={[pill, pillMuted]}>Viking axe example output</span></>
             : <><span id="result-seed" class:list={[pill, pillMuted]}>Seed {defaultSeed}</span><span class:list={[pill, pillMuted]}>4.2s render</span></>}
         </div>
         <div class="mt-auto flex justify-end pt-3">
@@ -812,6 +815,10 @@ const faqJsonLd = {
   </div>
 
   <script>
+    import type { Pixal3dImage } from '../../lib/pixal3dClient'
+
+    import { runPixal3d } from '../../lib/pixal3dClient'
+
     function initModelTabs() {
       const tabs = Array.from(document.querySelectorAll<HTMLElement>('[data-tab]'))
       const panels = Array.from(document.querySelectorAll<HTMLElement>('[data-panel]'))
@@ -1060,11 +1067,13 @@ const faqJsonLd = {
       const defaultImageUrl = runMobile.dataset.defaultImageUrl ?? null
       const defaultImageAlt = runMobile.dataset.defaultImageAlt ?? ''
       const defaultModelUrl = runMobile.dataset.defaultModelUrl ?? null
+      const runDesktop = $('pg-run-desktop')
 
       // BrandButton wraps labels in a centering span — writing to the button
       // itself would strip it.
       const label = (el: HTMLElement) => el.querySelector('span') ?? el
       const runMobileLabel = label(runMobile)
+      const runDesktopLabel = runDesktop ? label(runDesktop) : null
 
       const seedInput = $('pg-seed') as HTMLInputElement | null
       const defaultSeed = seedInput?.defaultValue ?? '0'
@@ -1072,7 +1081,11 @@ const faqJsonLd = {
 
       let authed = false
       let runsLeft = 5
-      let refImage: string | null = defaultImageName
+      let running = false
+      let refImage: Pixal3dImage | null =
+        defaultImageName && defaultImageUrl
+          ? { name: defaultImageName, source: defaultImageUrl }
+          : null
       let lastRun: Record<string, unknown> | null = null
 
       const mult = (sel: HTMLSelectElement | null) =>
@@ -1081,14 +1094,14 @@ const faqJsonLd = {
 
       const renderInputJson = () => {
         const inputs = isImageTo3d
-          ? { image: refImage, output_format: 'glb' }
+          ? { image: refImage?.name ?? null, output_format: 'glb' }
           : {
               prompt: prompt?.value.trim() ?? '',
               aspect_ratio: selAspect?.value ?? '16:9',
               duration_s: mult(selDur) * 5,
               resolution: selRes?.value ?? '720p',
               seed: seedNow(),
-              ...(refImage ? { reference_image: refImage } : {})
+              ...(refImage ? { reference_image: refImage.name } : {})
             }
         const payload: Record<string, unknown> = {
           workflow: slug,
@@ -1115,13 +1128,22 @@ const faqJsonLd = {
         costLine.textContent = `${c} credits ≈ $${(c * 0.0084).toFixed(2)}`
         modalCredits.textContent = String(c)
         if (varCost) varCost.textContent = String(c * 4)
-        if (!authed) {
-          runMobileLabel.textContent = `Run — ~${c} credits`
-        } else if (runsLeft > 0) {
-          runMobileLabel.textContent = `Run — ${runsLeft} free left`
-        } else {
-          runMobileLabel.textContent = 'Go Creator — from $20/mo'
-        }
+        const text = running
+          ? 'Running…'
+          : !authed
+            ? `Run — ~${c} credits`
+            : runsLeft > 0
+              ? `Run — ${runsLeft} free left`
+              : 'Go Creator — from $20/mo'
+        runMobileLabel.textContent = text
+        if (runDesktopLabel) runDesktopLabel.textContent = text
+      }
+
+      const setRunning = (value: boolean) => {
+        running = value
+        runMobile.toggleAttribute('disabled', value)
+        runDesktop?.toggleAttribute('disabled', value)
+        setRunLabels()
       }
 
       const renderAll = () => { renderInputJson(); renderResultJson(); setRunLabels() }
@@ -1215,7 +1237,7 @@ const faqJsonLd = {
         if (previewUrl) URL.revokeObjectURL(previewUrl)
         previewUrl = null
         refFile.value = ''
-        refImage = name
+        refImage = { name, source: url }
         refPreview.style.display = ''
         refPreview.src = url
         refPreview.alt = alt
@@ -1276,7 +1298,7 @@ const faqJsonLd = {
         refPreview.alt = `Uploaded preview of ${file.name}`
         $('ref-name')!.textContent = file.name
         $('ref-meta')!.textContent = `${fileKind(file)} · ${fileSize(file.size)}`
-        refImage = file.name
+        refImage = { name: file.name, source: file }
         $('ref-attachment')!.classList.remove('hidden')
         $('image-error')?.classList.add('hidden')
         setExampleSelection(null)
@@ -1369,17 +1391,110 @@ const faqJsonLd = {
         })
       )
 
+      let progressAnimation: Animation | null = null
+      function stopProgressAnimation() {
+        progressAnimation?.cancel()
+        progressAnimation = null
+        fill.style.transform = ''
+      }
+
+      const runImageTo3d = async () => {
+        if (!refImage) return
+        try {
+          const result = await runPixal3d(refImage, ({ status, value }) => {
+            if (
+              (status === 'queued' || status === 'running') &&
+              (value ?? 0) <= 0.05
+            ) {
+              if (!progressAnimation) {
+                fill.style.width = '35%'
+                progressAnimation = fill.animate(
+                  [
+                    { transform: 'translateX(-100%)' },
+                    { transform: 'translateX(286%)' }
+                  ],
+                  {
+                    duration: 1400,
+                    easing: 'ease-in-out',
+                    iterations: Infinity
+                  }
+                )
+              }
+              const detail = overlay.querySelector<HTMLElement>('.font-mono')
+              if (detail) detail.textContent = `${status}…`
+              return
+            }
+
+            stopProgressAnimation()
+            const percent = Math.round(
+              Math.min(1, Math.max(0.05, value ?? 0.05)) * 100
+            )
+            fill.style.width = `${percent}%`
+            const detail = overlay.querySelector<HTMLElement>('.font-mono')
+            if (detail) detail.textContent = `${status} · ${percent}%`
+          })
+          overlay.classList.add('hidden'); overlay.classList.remove('flex')
+          resultPreview.style.opacity = '0.4'
+          window.setTimeout(() => (resultPreview.style.opacity = '1'), 350)
+          $('result-model-canvas')?.dispatchEvent(
+            new CustomEvent('model-url-change', {
+              detail: { url: result.outputUrl }
+            })
+          )
+          const download = $('result-model-download') as HTMLAnchorElement | null
+          if (download) {
+            download.href = result.outputUrl
+            download.download = result.outputName
+          }
+          const outputName = $('result-output-name')
+          if (outputName) outputName.textContent = result.outputName
+          runsLeft -= 1
+          meter.textContent =
+            runsLeft > 0 ? `Free runs: ${runsLeft} left` : 'Free runs used'
+          lastRun = {
+            job_id: result.jobId,
+            status: 'succeeded',
+            model: slug,
+            output: {
+              name: result.outputName,
+              type: 'model/gltf-binary',
+              url: result.outputUrl
+            }
+          }
+          renderAll()
+        } catch (error) {
+          overlay.classList.add('hidden'); overlay.classList.remove('flex')
+          const runError = $('run-error')
+          if (runError) {
+            runError.textContent =
+              error instanceof Error ? error.message : 'Pixal3D run failed'
+            runError.classList.remove('hidden')
+          }
+        } finally {
+          stopProgressAnimation()
+          setRunning(false)
+        }
+      }
+
       const startRun = () => {
+        if (running) return
         if (runsLeft <= 0) {
           upgrade.classList.remove('hidden'); upgrade.classList.add('flex')
           return
         }
+        setRunning(true)
         strip.classList.remove('hidden'); strip.classList.add('flex')
         overlay.classList.remove('hidden'); overlay.classList.add('flex')
         $('result-json-box')!.classList.add('hidden'); resultPreview.classList.remove('hidden')
         $('result-meta')!.classList.remove('hidden')
         $('result-download')!.classList.remove('hidden')
+        stopProgressAnimation()
         fill.style.width = '0%'
+        $('run-error')?.classList.add('hidden')
+        if (isImageTo3d) {
+          void runImageTo3d()
+          return
+        }
         requestAnimationFrame(() => requestAnimationFrame(() => (fill.style.width = '92%')))
         window.setTimeout(() => {
           overlay.classList.add('hidden'); overlay.classList.remove('flex')
@@ -1404,6 +1519,7 @@ const faqJsonLd = {
           meter.textContent = runsLeft > 0 ? `Free runs: ${runsLeft} left` : 'Free runs used'
           varBlock?.classList.remove('hidden')
           renderAll()
+          setRunning(false)
           if (runsLeft <= 0) {
             window.setTimeout(() => { upgrade.classList.remove('hidden'); upgrade.classList.add('flex') }, 900)
           }
@@ -1447,6 +1563,7 @@ const faqJsonLd = {
         else startRun()
       }
       runMobile.addEventListener('click', onRun)
+      runDesktop?.addEventListener('click', onRun)
       $('free-run-cta')?.addEventListener('click', onRun)
       modal.querySelectorAll('[data-auth]').forEach((b) =>
         b.addEventListener('click', () => {
