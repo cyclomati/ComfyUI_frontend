@@ -89,8 +89,6 @@
       :action-url="activeCheckoutActionUrl"
       :authentication-state
       :authentication-error
-      :can-retry-authentication
-      :is-authenticating
       :reconciliation-operation-id
       :quote-is-current
       :is-applying-promotion-code
@@ -98,7 +96,6 @@
       @apply-promotion-code="applyPromotionCode"
       @invalidate-quote="invalidateQuote"
       @back="handleBackToPricing"
-      @retry-authentication="retryPaymentAuthentication"
     />
 
     <!-- Subscription Preview Step - Plan Transition -->
@@ -114,8 +111,6 @@
       :force-reactivation="reactivationRequired"
       :authentication-state
       :authentication-error
-      :can-retry-authentication
-      :is-authenticating
       :reconciliation-operation-id
       :quote-is-current
       :is-applying-promotion-code
@@ -123,7 +118,6 @@
       @apply-promotion-code="applyPromotionCode"
       @invalidate-quote="invalidateQuote"
       @back="handleBackToPricing"
-      @retry-authentication="retryPaymentAuthentication"
     />
 
     <!-- Success Step - subscribe/change-plan confirmation -->
@@ -181,15 +175,12 @@ const {
   activeCheckoutActionUrl,
   authenticationState,
   authenticationError,
-  canRetryAuthentication,
-  isAuthenticating,
   reconciliationOperationId,
   isPolling,
   handleSubscribeClick,
   handleBackToPricing,
   handleAddCreditCard,
   handleConfirmTransition,
-  retryPaymentAuthentication,
   applyPromotionCode,
   invalidateQuote,
   handleResubscribe,
