@@ -33,6 +33,7 @@ An Architecture Decision Record captures an important architectural decision mad
 | [0021](0021-classify-and-coalesce-canvas-invalidation.md)                   | Classify and Coalesce Canvas Invalidation                   | Proposed | 2026-08-26 |
 | [0022](0022-performance-measurement-and-ci-policy.md)                       | Performance Measurement and CI Policy                       | Proposed | 2026-08-26 |
 | [0023](0023-widget-entities-and-legacy-behavior-boundary.md)                | Widget Entities and Legacy Behavior Boundary                | Proposed | 2026-08-26 |
+| [0024](0024-seq-gap-recovery-is-replay-never-wipe.md)                       | Seq-Gap Recovery Is Replay — Never Wipe the Follower Doc    | Accepted | 2026-08-28 |
 
 ## Creating a New ADR
 
