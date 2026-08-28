@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useResizeObserver } from '@vueuse/core'
-import { nextTick, onMounted, ref, watch } from 'vue'
+import { onMounted, shallowRef, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { cn } from '@comfyorg/tailwind-utils'
@@ -48,34 +48,19 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 
-const showFullDescription = ref(false)
-const descriptionElement = ref<HTMLParagraphElement | null>(null)
-const descriptionOverflows = ref(false)
+const showFullDescription = shallowRef(false)
+const descriptionElement =
+  useTemplateRef<HTMLParagraphElement>('descriptionElement')
+const descriptionOverflows = shallowRef(false)
 
 function measureDescriptionOverflow() {
   const element = descriptionElement.value
-  if (!element || showFullDescription.value) return
-  descriptionOverflows.value = element.scrollHeight > element.clientHeight + 1
-}
-
-async function toggleDescription() {
-  showFullDescription.value = !showFullDescription.value
-  if (!showFullDescription.value) {
-    await nextTick()
-    measureDescriptionOverflow()
-  }
+  descriptionOverflows.value =
+    !!element && element.scrollHeight > element.clientHeight + 1
 }
 
 onMounted(measureDescriptionOverflow)
 useResizeObserver(descriptionElement, measureDescriptionOverflow)
-watch(
-  () => description,
-  async () => {
-    showFullDescription.value = false
-    await nextTick()
-    measureDescriptionOverflow()
-  }
-)
 
 type DownloadingState = Extract<
   TemplateModelDownloadState,
@@ -231,11 +216,11 @@ function getFailedDownloadLabel(
           {{ description }}
         </p>
         <button
-          v-if="descriptionOverflows"
+          v-if="descriptionOverflows || showFullDescription"
           type="button"
           class="m-0 flex w-fit cursor-pointer items-center gap-1 border-0 bg-transparent p-0 text-sm text-base-foreground hover:underline"
           :aria-expanded="showFullDescription"
-          @click="toggleDescription"
+          @click="showFullDescription = !showFullDescription"
         >
           {{
             t(
