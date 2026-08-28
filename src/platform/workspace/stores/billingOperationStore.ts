@@ -239,6 +239,10 @@ export const useBillingOperationStore = defineStore('billingOperation', () => {
    * `actionUrl`: a `needs_payment_method` response puts a payment-method
    * collection page in `actionUrl` too, and counting that as a challenge would
    * both inflate this denominator and latch out the real 3DS presentation.
+   *
+   * `authentication_state` is only read under the embedded-checkout flag, so
+   * the ungated arm reports no presentation rather than a looser one. An empty
+   * challenge funnel there is intended; a differently-defined one is not.
    */
   function trackChallengePresented(opId: string) {
     const operation = operations.value.get(opId)
@@ -636,6 +640,13 @@ export const useBillingOperationStore = defineStore('billingOperation', () => {
     trackChallengeReturned(opId, 'failed', 'challenge_not_completed')
   }
 
+  /**
+   * The numerator against `challenge_presented`. Gated on the same latch, so a
+   * return is only reported for a challenge this client actually presented:
+   * `retryPaymentAuthentication` also runs for a `failed_retryable` decline
+   * that was never `requires_action`, and counting that return would put an
+   * operation in the numerator that is absent from the denominator.
+   */
   function trackChallengeReturned(
     opId: string,
     outcome: 'succeeded' | 'failed',
@@ -647,6 +658,7 @@ export const useBillingOperationStore = defineStore('billingOperation', () => {
   ) {
     const operation = operations.value.get(opId)
     if (!operation || operation.type !== 'subscription') return
+    if (!challengePresentedOps.has(opId)) return
 
     useTelemetry()?.trackBillingEvent({
       operation: 'subscription_checkout',
@@ -724,7 +736,6 @@ export const useBillingOperationStore = defineStore('billingOperation', () => {
       authenticationRequiredSeen:
         operation.authenticationRequiredSeen || actionUrl !== null
     })
-    if (actionUrl !== null) trackChallengePresented(opId)
     // Tracks the CURRENT action_url, which the contract defines as present
     // exactly while the operation cannot proceed without the customer — so the
     // toast never outlives the verification action it points at. Swapped only
