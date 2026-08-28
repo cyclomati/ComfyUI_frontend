@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { useResizeObserver } from '@vueuse/core'
+import { nextTick, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { cn } from '@comfyorg/tailwind-utils'
@@ -48,6 +49,33 @@ const emit = defineEmits<{
 const { t } = useI18n()
 
 const showFullDescription = ref(false)
+const descriptionElement = ref<HTMLParagraphElement | null>(null)
+const descriptionOverflows = ref(false)
+
+function measureDescriptionOverflow() {
+  const element = descriptionElement.value
+  if (!element || showFullDescription.value) return
+  descriptionOverflows.value = element.scrollHeight > element.clientHeight + 1
+}
+
+async function toggleDescription() {
+  showFullDescription.value = !showFullDescription.value
+  if (!showFullDescription.value) {
+    await nextTick()
+    measureDescriptionOverflow()
+  }
+}
+
+onMounted(measureDescriptionOverflow)
+useResizeObserver(descriptionElement, measureDescriptionOverflow)
+watch(
+  () => description,
+  async () => {
+    showFullDescription.value = false
+    await nextTick()
+    measureDescriptionOverflow()
+  }
+)
 
 type DownloadingState = Extract<
   TemplateModelDownloadState,
@@ -192,6 +220,7 @@ function getFailedDownloadLabel(
           {{ title }}
         </h2>
         <p
+          ref="descriptionElement"
           :class="
             cn(
               'm-0 max-w-2xl overflow-hidden text-sm/relaxed wrap-break-word text-muted-foreground transition-[max-height] duration-200 ease-out [interpolate-size:allow-keywords] motion-reduce:transition-none',
@@ -202,11 +231,11 @@ function getFailedDownloadLabel(
           {{ description }}
         </p>
         <button
-          v-if="description.length > 220"
+          v-if="descriptionOverflows"
           type="button"
           class="m-0 flex w-fit cursor-pointer items-center gap-1 border-0 bg-transparent p-0 text-sm text-base-foreground hover:underline"
           :aria-expanded="showFullDescription"
-          @click="showFullDescription = !showFullDescription"
+          @click="toggleDescription"
         >
           {{
             t(
