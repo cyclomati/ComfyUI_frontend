@@ -1,4 +1,4 @@
-# 16. Entity Registration Collision and Recovery Boundaries
+# ADR-ERCRB: Entity Registration Collision and Recovery Boundaries
 
 Date: 2026-08-24
 

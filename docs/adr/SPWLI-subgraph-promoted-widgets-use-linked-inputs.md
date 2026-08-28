@@ -1,12 +1,12 @@
-# 9. Subgraph promoted widgets use linked inputs
+# ADR-SPWLI: Subgraph promoted widgets use linked inputs
 
 Date: 2026-05-05
 
 Appendices:
 
-- [Before/after flow diagrams](./0009-subgraph-promoted-widgets-use-linked-inputs/before-after-flows.md)
-- [System comparison](./0009-subgraph-promoted-widgets-use-linked-inputs/system-comparison.md)
-- [Removing `disambiguatingSourceNodeId`](./0009-subgraph-promoted-widgets-use-linked-inputs/disambiguating-source-node-id.md)
+- [Before/after flow diagrams](./SPWLI-subgraph-promoted-widgets-use-linked-inputs/before-after-flows.md)
+- [System comparison](./SPWLI-subgraph-promoted-widgets-use-linked-inputs/system-comparison.md)
+- [Removing `disambiguatingSourceNodeId`](./SPWLI-subgraph-promoted-widgets-use-linked-inputs/disambiguating-source-node-id.md)
 
 ## Status
 

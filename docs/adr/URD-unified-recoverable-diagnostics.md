@@ -1,4 +1,4 @@
-# 19. Unified Recoverable Diagnostics
+# ADR-URD: Unified Recoverable Diagnostics
 
 Date: 2026-08-25
 
@@ -68,5 +68,5 @@ the failed operation leaves state consistent.
 
 ## References
 
-- [ADR-0013: Telemetry Service Selection](0013-telemetry-service-selection.md)
+- [ADR-TSS: Telemetry Service Selection](TSS-telemetry-service-selection.md)
 - [FE-1859](https://linear.app/comfyorg/issue/FE-1859/audit-and-replace-unsafe-throw-new-error-paths-with-fail-safe-handling)

@@ -1,4 +1,4 @@
-# 12. Cloud Release Notes Use the ComfyUI Version
+# ADR-CRNCV: Cloud Release Notes Use the ComfyUI Version
 
 Date: 2026-07-13
 
@@ -6,7 +6,7 @@ Date: 2026-07-13
 
 Accepted
 
-<!-- [Proposed | Accepted | Rejected | Deprecated | Superseded by [ADR-NNNN](NNNN-title.md)] -->
+<!-- [Proposed | Accepted | Rejected | Deprecated | Superseded by [ADR-ACRONYM](ACRONYM-title.md)] -->
 
 ## Context
 
