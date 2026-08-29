@@ -15,41 +15,39 @@
     >
       <i class="icon-[lucide--chevron-left] size-full" />
     </Button>
-    <ScrollPanel
-      class="no-drag overflow-hidden"
-      :pt:content="{
-        class: 'p-0 w-full flex',
-        onwheel: handleWheel
-      }"
-      pt:bar-x="h-1"
-    >
-      <SelectButton
-        class="workflow-tabs bg-transparent"
-        :class="props.class"
-        :model-value="selectedWorkflow"
-        :options="options"
-        option-label="label"
-        data-key="value"
-        @update:model-value="onWorkflowChange"
+    <div class="no-drag overflow-hidden">
+      <div
+        ref="scrollContent"
+        class="workflow-tabs-scroll flex size-full scrollbar-thin scrollbar-thumb-alpha-smoke-500-50 scrollbar-track-transparent overflow-x-auto overflow-y-hidden p-0"
+        @wheel="handleWheel"
       >
-        <template #option="{ option, index }">
-          <WorkflowTab
-            :workflow-option="option"
-            :is-first="index === 0"
-            :is-last="index === options.length - 1"
-            @click.middle="onCloseWorkflow(option)"
-            @close-to-left="closeWorkflows(options.slice(0, index))"
-            @close-to-right="closeWorkflows(options.slice(index + 1))"
-            @close-others="
-              closeWorkflows([
-                ...options.slice(index + 1),
-                ...options.slice(0, index)
-              ])
-            "
-          />
-        </template>
-      </SelectButton>
-    </ScrollPanel>
+        <SelectButton
+          :class="cn('workflow-tabs bg-transparent', props.class)"
+          :model-value="selectedWorkflow"
+          :options="options"
+          option-label="label"
+          data-key="value"
+          @update:model-value="onWorkflowChange"
+        >
+          <template #option="{ option, index }">
+            <WorkflowTab
+              :workflow-option="option"
+              :is-first="index === 0"
+              :is-last="index === options.length - 1"
+              @click.middle="onCloseWorkflow(option)"
+              @close-to-left="closeWorkflows(options.slice(0, index))"
+              @close-to-right="closeWorkflows(options.slice(index + 1))"
+              @close-others="
+                closeWorkflows([
+                  ...options.slice(index + 1),
+                  ...options.slice(0, index)
+                ])
+              "
+            />
+          </template>
+        </SelectButton>
+      </div>
+    </div>
     <Button
       v-if="showOverflowArrows"
       variant="muted-textonly"
@@ -123,7 +121,6 @@
 
 <script setup lang="ts">
 import { useScroll } from '@vueuse/core'
-import ScrollPanel from 'primevue/scrollpanel'
 import SelectButton from 'primevue/selectbutton'
 import {
   computed,
@@ -288,11 +285,8 @@ let stopArrivedWatch: WatchStopHandle | null = null
 let stopOverflowWatch: WatchStopHandle | null = null
 
 onMounted(() => {
-  const el = containerRef.value?.querySelector<HTMLElement>(
-    '.p-scrollpanel-content'
-  )
+  const el = scrollContent.value
   if (!el) return
-  scrollContent.value = el
 
   const scrollState = useScroll(el)
 
@@ -399,18 +393,8 @@ onUpdated(() => {
   visibility: visible;
 }
 
-:deep(.p-scrollpanel-content) {
-  height: 100%;
-}
-
 :deep(.workflow-tabs) {
   display: flex;
-}
-
-/* Scrollbar half opacity to avoid blocking the active tab bottom border */
-:deep(.p-scrollpanel:hover .p-scrollpanel-bar),
-:deep(.p-scrollpanel:active .p-scrollpanel-bar) {
-  opacity: 0.5;
 }
 
 :deep(.p-selectbutton) {

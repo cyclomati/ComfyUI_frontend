@@ -9,74 +9,71 @@
       {{ t('actionbar.dockToTop') }}
     </div>
 
-    <Panel
+    <div
       ref="panelRef"
-      class="pointer-events-auto"
       :style="style"
-      :class="panelClass"
-      :pt="{
-        header: { class: 'hidden' },
-        content: { class: isDocked ? 'p-0' : 'p-1' }
-      }"
+      :class="cn('pointer-events-auto', panelClass)"
     >
-      <div class="relative flex items-center gap-2 select-none">
-        <span
-          ref="dragHandleRef"
-          :class="
-            cn(
-              'drag-handle h-max w-3 cursor-grab',
-              isDragging && 'cursor-grabbing'
-            )
-          "
-        />
-        <Suspense @resolve="comfyRunButtonResolved">
-          <ComfyRunButton v-coachmark="FIRST_RUN_COACH_IDS.runButton" />
-        </Suspense>
-        <Button
-          v-tooltip.bottom="cancelJobTooltipConfig"
-          variant="destructive"
-          size="icon"
-          :disabled="isExecutionIdle"
-          :aria-label="t('menu.interrupt')"
-          @click="cancelCurrentJob"
-        >
-          <i class="icon-[lucide--x] size-4" />
-        </Button>
-        <Button
-          v-tooltip.bottom="queueHistoryTooltipConfig"
-          variant="secondary"
-          size="md"
-          :aria-pressed="
-            isQueuePanelV2Enabled
-              ? activeSidebarTabId === 'job-history'
-              : queueOverlayExpanded
-          "
-          class="relative px-3"
-          data-testid="queue-overlay-toggle"
-          @click="toggleQueueOverlay"
-          @contextmenu.stop.prevent="showQueueContextMenu"
-        >
-          <span class="text-sm font-normal tabular-nums">
-            {{ activeJobsLabel }}
-          </span>
-          <StatusBadge
-            v-if="activeJobsCount > 0"
-            data-testid="active-jobs-indicator"
-            variant="dot"
-            class="pointer-events-none absolute -top-0.5 -right-0.5 animate-pulse"
+      <div :class="isDocked ? 'p-0' : 'p-1'">
+        <div class="relative flex items-center gap-2 select-none">
+          <span
+            ref="dragHandleRef"
+            :class="
+              cn(
+                'drag-handle h-max w-3 cursor-grab',
+                isDragging && 'cursor-grabbing'
+              )
+            "
           />
-          <span class="sr-only">
-            {{
+          <Suspense @resolve="comfyRunButtonResolved">
+            <ComfyRunButton v-coachmark="FIRST_RUN_COACH_IDS.runButton" />
+          </Suspense>
+          <Button
+            v-tooltip.bottom="cancelJobTooltipConfig"
+            variant="destructive"
+            size="icon"
+            :disabled="isExecutionIdle"
+            :aria-label="t('menu.interrupt')"
+            @click="cancelCurrentJob"
+          >
+            <i class="icon-[lucide--x] size-4" />
+          </Button>
+          <Button
+            v-tooltip.bottom="queueHistoryTooltipConfig"
+            variant="secondary"
+            size="md"
+            :aria-pressed="
               isQueuePanelV2Enabled
-                ? t('sideToolbar.queueProgressOverlay.viewJobHistory')
-                : t('sideToolbar.queueProgressOverlay.expandCollapsedQueue')
-            }}
-          </span>
-        </Button>
-        <ContextMenu ref="queueContextMenu" :model="queueContextMenuItems" />
+                ? activeSidebarTabId === 'job-history'
+                : queueOverlayExpanded
+            "
+            class="relative px-3"
+            data-testid="queue-overlay-toggle"
+            @click="toggleQueueOverlay"
+            @contextmenu.stop.prevent="showQueueContextMenu"
+          >
+            <span class="text-sm font-normal tabular-nums">
+              {{ activeJobsLabel }}
+            </span>
+            <StatusBadge
+              v-if="activeJobsCount > 0"
+              data-testid="active-jobs-indicator"
+              variant="dot"
+              class="pointer-events-none absolute -top-0.5 -right-0.5 animate-pulse"
+            />
+            <span class="sr-only">
+              {{
+                isQueuePanelV2Enabled
+                  ? t('sideToolbar.queueProgressOverlay.viewJobHistory')
+                  : t('sideToolbar.queueProgressOverlay.expandCollapsedQueue')
+              }}
+            </span>
+          </Button>
+          <ContextMenu ref="queueContextMenu" :model="queueContextMenuItems" />
+        </div>
+        <FreeTierQuota v-if="!isDocked" />
       </div>
-      <FreeTierQuota v-if="!isDocked" />
-    </Panel>
+    </div>
 
     <Teleport v-if="inlineProgressTarget" :to="inlineProgressTarget">
       <QueueInlineProgress
@@ -93,16 +90,13 @@ import {
   useDraggable,
   useEventListener,
   useLocalStorage,
-  unrefElement,
   watchDebounced
 } from '@vueuse/core'
 import { clamp } from 'es-toolkit/compat'
 import { storeToRefs } from 'pinia'
 import ContextMenu from 'primevue/contextmenu'
 import type { MenuItem } from 'primevue/menuitem'
-import Panel from 'primevue/panel'
 import { computed, nextTick, ref, watch } from 'vue'
-import type { ComponentPublicInstance } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import StatusBadge from '@/components/common/StatusBadge.vue'
@@ -152,11 +146,8 @@ const visible = computed(() => position.value !== 'Disabled')
 const { isQueuePanelV2Enabled, isRunProgressBarEnabled } =
   useQueueFeatureFlags()
 
-const panelRef = ref<ComponentPublicInstance | null>(null)
-const panelElement = computed<HTMLElement | null>(() => {
-  const element = unrefElement(panelRef)
-  return element instanceof HTMLElement ? element : null
-})
+const panelRef = ref<HTMLElement | null>(null)
+const panelElement = computed(() => panelRef.value)
 const dragHandleRef = ref<HTMLElement | null>(null)
 const isDocked = useLocalStorage('Comfy.MenuPosition.Docked', true)
 const storedPosition = useLocalStorage('Comfy.MenuPosition.Floating', {

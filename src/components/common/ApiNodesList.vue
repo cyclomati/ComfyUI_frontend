@@ -3,7 +3,7 @@
     <div class="flex text-xs">
       <div>{{ t('apiNodesCostBreakdown.title') }}</div>
     </div>
-    <ScrollPanel class="h-0 grow">
+    <div class="scrollbar-custom h-0 grow overflow-x-hidden">
       <div class="flex flex-col gap-2">
         <div
           v-for="nodeName in nodeNames"
@@ -15,12 +15,11 @@
           </div>
         </div>
       </div>
-    </ScrollPanel>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import ScrollPanel from 'primevue/scrollpanel'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
