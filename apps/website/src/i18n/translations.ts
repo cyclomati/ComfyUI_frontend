@@ -7471,8 +7471,8 @@ const translations = {
     'zh-CN': '企业版：托管构建'
   },
   'platform.products.models.title': {
-    en: 'Models API',
-    'zh-CN': 'Models API'
+    en: 'Comfy Router',
+    'zh-CN': 'Comfy Router'
   },
   'platform.products.models.description': {
     en: 'Call partner models — Seedance, Minimax H3, Nano Banana, GPT-Image-2 — and access the latest models with a single API key.',
@@ -7701,9 +7701,9 @@ const translations = {
     'zh-CN': '示例：500 GB 模型存放在标准网络存储上 = 每月 $45.50 + GPU 时间。'
   },
   'platform.pricing.modelsNote': {
-    en: 'Models API usage shows per-output prices on each model card and draws from the same credit pool.',
+    en: 'Comfy Router usage shows per-output prices on each model card and draws from the same credit pool.',
     'zh-CN':
-      'Models API 用量在每个模型卡片上标注单次输出价格，并从同一积分池扣费。'
+      'Comfy Router 用量在每个模型卡片上标注单次输出价格，并从同一积分池扣费。'
   },
   // ── Serverless API subpage ────────────────────────────────────
   'platform.serverlessFeatures.heading': {
