@@ -145,7 +145,7 @@ export class WorkflowsSidebarTab extends SidebarTab {
     super(page, 'workflows')
     this.root = page.getByTestId(TestIds.sidebar.workflows)
     this.activeWorkflowLabel = this.root.locator(
-      '.comfyui-workflows-open .p-tree-node-selected .node-label'
+      '.comfyui-workflows-open .tree-explorer-item[data-selected] .node-label'
     )
     this.searchInput = this.root.getByRole('combobox').first()
     this.refreshButton = this.root.getByTestId(
@@ -188,9 +188,7 @@ export class WorkflowsSidebarTab extends SidebarTab {
 
   async renameWorkflow(locator: Locator, newName: string) {
     await locator.click({ button: 'right' })
-    await this.page
-      .locator('.p-contextmenu-item-content', { hasText: 'Rename' })
-      .click()
+    await this.page.getByRole('menuitem', { name: 'Rename' }).click()
     await this.page.keyboard.type(newName)
     await this.page.keyboard.press('Enter')
 
@@ -206,9 +204,7 @@ export class WorkflowsSidebarTab extends SidebarTab {
 
   async insertWorkflow(locator: Locator) {
     await locator.click({ button: 'right' })
-    await this.page
-      .locator('.p-contextmenu-item-content', { hasText: 'Insert' })
-      .click()
+    await this.page.getByRole('menuitem', { name: 'Insert' }).click()
   }
 }
 
@@ -229,10 +225,8 @@ export class ModelLibrarySidebarTab extends SidebarTab {
     this.loadAllFoldersButton = page.getByRole('button', {
       name: 'Load All Folders'
     })
-    this.folderNodes = this.modelTree.locator(
-      '.p-tree-node:not(.p-tree-node-leaf)'
-    )
-    this.leafNodes = this.modelTree.locator('.p-tree-node-leaf')
+    this.folderNodes = this.modelTree.locator('.tree-folder')
+    this.leafNodes = this.modelTree.locator('.tree-leaf')
     this.modelPreview = page.locator('.model-lib-model-preview')
   }
 
@@ -243,27 +237,24 @@ export class ModelLibrarySidebarTab extends SidebarTab {
 
   getFolderByLabel(label: string) {
     return this.modelTree
-      .locator('.p-tree-node:not(.p-tree-node-leaf)')
+      .locator('.tree-folder')
       .filter({ hasText: label })
       .first()
   }
 
   getLeafByLabel(label: string) {
     return this.modelTree
-      .locator('.p-tree-node-leaf')
+      .locator('.tree-leaf')
       .filter({ hasText: label })
       .first()
   }
 
-  /**
-   * A folder's own row (not the whole subtree). Required for nested folders:
-   * an ancestor `.p-tree-node`'s text contains its descendants' labels, so
-   * `getFolderByLabel` would match — and click — the ancestor instead.
-   */
   getFolderRowByLabel(label: string) {
     return this.modelTree
-      .locator('.p-tree-node:not(.p-tree-node-leaf) > .p-tree-node-content')
-      .filter({ hasText: label })
+      .locator('.tree-explorer-item')
+      .filter({
+        has: this.modelTree.locator('.tree-folder').filter({ hasText: label })
+      })
       .first()
   }
 }
