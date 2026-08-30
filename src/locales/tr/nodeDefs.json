@@ -7133,7 +7133,7 @@
       },
       "mode": {
         "name": "mode",
-        "tooltip": "'speed' daha hızlıdır; 'precision' ise iki kat fiyatla daha yüksek kaliteli dudak senkronizasyonu sağlar."
+        "tooltip": "'speed' daha hızlıdır; 'precision' daha yüksek ücret karşılığında daha kaliteli dudak senkronizasyonu sağlar."
       },
       "output_language": {
         "name": "output_language",

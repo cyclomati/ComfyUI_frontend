@@ -7133,7 +7133,7 @@
       },
       "mode": {
         "name": "モード",
-        "tooltip": "「speed」は高速、「precision」は2倍の価格で高品質なリップシンクを生成します。"
+        "tooltip": "「speed」はより高速です。「precision」はより高価ですが、高品質なリップシンクを生成します。"
       },
       "output_language": {
         "name": "出力言語",

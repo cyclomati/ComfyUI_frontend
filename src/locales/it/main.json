@@ -8,6 +8,11 @@
     "share": "Condividi",
     "shareTooltip": "Condividi workflow"
   },
+  "agent": {
+    "askComfyAgent": "Chiedi a Comfy Agent",
+    "loadFailed": "Impossibile caricare il pannello dell'agente.",
+    "title": "Comfy Agent"
+  },
   "apiNodesCostBreakdown": {
     "costPerRun": "Costo per esecuzione",
     "title": "Nodo/i API",
@@ -2409,8 +2414,8 @@
   },
   "loadWorkflowWarning": {
     "coreNodesFromVersion": "Nodi core dalla versione {version}:",
-    "outdatedVersion": "Questo workflow è stato creato con una versione più recente di ComfyUI ({version}). Alcuni nodi potrebbero non funzionare correttamente.",
-    "outdatedVersionGeneric": "Questo workflow è stato creato con una versione più recente di ComfyUI. Alcuni nodi potrebbero non funzionare correttamente.",
+    "newerVersionRequired": "Alcuni nodi richiedono una versione più recente di ComfyUI (attuale: {version}). Aggiorna per utilizzare tutti i nodi.",
+    "newerVersionRequiredGeneric": "Alcuni nodi richiedono una versione più recente di ComfyUI. Aggiorna per utilizzare tutti i nodi.",
     "unknownVersion": "sconosciuto"
   },
   "logsTerminal": {
@@ -3221,26 +3226,15 @@
     "done": "Fatto",
     "firstRun": {
       "nudge": {
-        "animate": {
-          "detail": "Da immagine a video · 5 s",
-          "title": "Animala"
+        "dismiss": "Non ora",
+        "explore": "Esplora i modelli",
+        "noTour": {
+          "body": "Sfoglia i modelli e scegline uno da realizzare.",
+          "title": "Ce ne sono altre centinaia da cui provengono"
         },
-        "body": "Ognuno parte dall'immagine che hai appena creato.",
-        "explore": "Sfoglia tutti i modelli",
-        "fallback": {
-          "body": "Sfoglia i modelli e scegli qualcosa da creare.",
-          "title": "Ce ne sono altre centinaia"
-        },
-        "loadFailed": "Impossibile caricare quel modello. Riprova.",
-        "restyle": {
-          "detail": "Modello partner · Qualsiasi piano a pagamento",
-          "title": "Cambia stile con Nano Banana"
-        },
-        "title": "Il tuo primo output. Ecco cosa fare ora.",
-        "upscale": {
-          "badge": "4x",
-          "detail": "Stessa immagine, più dettagli",
-          "title": "Aumenta la risoluzione"
+        "ran": {
+          "body": "Hai appena creato il tuo primo. Scopri cos'altro puoi realizzare.",
+          "title": "Quello era uno di centinaia"
         }
       },
       "prompt": {

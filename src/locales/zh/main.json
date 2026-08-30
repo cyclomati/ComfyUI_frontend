@@ -8,6 +8,11 @@
     "share": "分享",
     "shareTooltip": "分享工作流"
   },
+  "agent": {
+    "askComfyAgent": "询问 Comfy Agent",
+    "loadFailed": "智能代理面板加载失败。",
+    "title": "Comfy Agent"
+  },
   "apiNodesCostBreakdown": {
     "costPerRun": "每次运行的成本",
     "title": "API节点",
@@ -2409,8 +2414,8 @@
   },
   "loadWorkflowWarning": {
     "coreNodesFromVersion": "核心节点来源于 {version} 版本。",
-    "outdatedVersion": "这个工作流由新版 ComfyUI（{version}）创建，部分节点可能无法正常运行。",
-    "outdatedVersionGeneric": "这个工作流由新版 ComfyUI 创建，部分节点可能无法正常运行。",
+    "newerVersionRequired": "部分节点需要较新版本的 ComfyUI（当前版本：{version}）。请更新以使用所有节点。",
+    "newerVersionRequiredGeneric": "部分节点需要较新版本的 ComfyUI。请更新以使用所有节点。",
     "unknownVersion": "未知"
   },
   "logsTerminal": {
@@ -3221,26 +3226,15 @@
     "done": "完成",
     "firstRun": {
       "nudge": {
-        "animate": {
-          "detail": "图像转视频 · 5 秒",
-          "title": "将其制作成动画"
+        "dismiss": "暂不",
+        "explore": "探索模板",
+        "noTour": {
+          "body": "浏览模板并选择一个来构建。",
+          "title": "还有数百个类似的内容"
         },
-        "body": "每项都以您刚刚创建的图像为起点。",
-        "explore": "浏览所有模板",
-        "fallback": {
-          "body": "浏览模板并选择要创建的内容。",
-          "title": "还有数百个类似模板"
-        },
-        "loadFailed": "无法加载该模板。请重试。",
-        "restyle": {
-          "detail": "合作伙伴模型 · 任意付费套餐",
-          "title": "使用 Nano Banana 重新设计风格"
-        },
-        "title": "您的第一个输出。接下来是这些。",
-        "upscale": {
-          "badge": "4x",
-          "detail": "同一图像，更多细节",
-          "title": "放大图像"
+        "ran": {
+          "body": "你刚刚完成了第一个。探索你还能构建什么。",
+          "title": "那只是数百个中的一个"
         }
       },
       "prompt": {

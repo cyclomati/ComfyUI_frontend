@@ -8,6 +8,11 @@
     "share": "Compartir",
     "shareTooltip": "Compartir flujo de trabajo"
   },
+  "agent": {
+    "askComfyAgent": "Preguntar a Comfy Agent",
+    "loadFailed": "No se pudo cargar el panel del agente.",
+    "title": "Comfy Agent"
+  },
   "apiNodesCostBreakdown": {
     "costPerRun": "Costo por ejecución",
     "title": "Nodo(s) de API",
@@ -2409,8 +2414,8 @@
   },
   "loadWorkflowWarning": {
     "coreNodesFromVersion": "Nodos principales de la versión {version}:",
-    "outdatedVersion": "Este flujo de trabajo fue creado con una versión más reciente de ComfyUI ({version}). Es posible que algunos nodos no funcionen correctamente.",
-    "outdatedVersionGeneric": "Este flujo de trabajo fue creado con una versión más reciente de ComfyUI. Es posible que algunos nodos no funcionen correctamente.",
+    "newerVersionRequired": "Algunos nodos requieren una versión más reciente de ComfyUI (actual: {version}). Actualiza para usar todos los nodos.",
+    "newerVersionRequiredGeneric": "Algunos nodos requieren una versión más reciente de ComfyUI. Actualiza para usar todos los nodos.",
     "unknownVersion": "desconocido"
   },
   "logsTerminal": {
@@ -3221,26 +3226,15 @@
     "done": "Listo",
     "firstRun": {
       "nudge": {
-        "animate": {
-          "detail": "Imagen a vídeo · 5 s",
-          "title": "Anímala"
-        },
-        "body": "Cada uno comienza con la imagen que acabas de crear.",
-        "explore": "Explorar todas las plantillas",
-        "fallback": {
+        "dismiss": "Ahora no",
+        "explore": "Explorar plantillas",
+        "noTour": {
           "body": "Explora las plantillas y elige algo para crear.",
-          "title": "Hay cientos más de donde salió eso"
+          "title": "Hay cientos más de donde vino ese"
         },
-        "loadFailed": "No se pudo cargar esa plantilla. Vuelve a intentarlo.",
-        "restyle": {
-          "detail": "Modelo asociado · Cualquier plan de pago",
-          "title": "Reestiliza con Nano Banana"
-        },
-        "title": "Tu primer resultado. Esto es lo que sigue.",
-        "upscale": {
-          "badge": "4x",
-          "detail": "La misma imagen, más detalle",
-          "title": "Mejora su resolución"
+        "ran": {
+          "body": "Acabas de crear el primero. Explora qué más puedes crear.",
+          "title": "Ese fue uno de cientos"
         }
       },
       "prompt": {

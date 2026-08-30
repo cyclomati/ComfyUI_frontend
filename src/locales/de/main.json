@@ -8,6 +8,11 @@
     "share": "Teilen",
     "shareTooltip": "Workflow teilen"
   },
+  "agent": {
+    "askComfyAgent": "Comfy Agent fragen",
+    "loadFailed": "Das Agent-Panel konnte nicht geladen werden.",
+    "title": "Comfy Agent"
+  },
   "apiNodesCostBreakdown": {
     "costPerRun": "Kosten pro Ausführung",
     "title": "API-Node(s)",
@@ -2409,8 +2414,8 @@
   },
   "loadWorkflowWarning": {
     "coreNodesFromVersion": "Core-Nodes ab Version {version}:",
-    "outdatedVersion": "Dieser Workflow wurde mit einer neueren Version von ComfyUI ({version}) erstellt. Einige Nodes funktionieren möglicherweise nicht korrekt.",
-    "outdatedVersionGeneric": "Dieser Workflow wurde mit einer neueren Version von ComfyUI erstellt. Einige Nodes funktionieren möglicherweise nicht korrekt.",
+    "newerVersionRequired": "Einige Nodes erfordern eine neuere Version von ComfyUI (aktuell: {version}). Bitte aktualisieren Sie, um alle Nodes zu verwenden.",
+    "newerVersionRequiredGeneric": "Einige Nodes erfordern eine neuere Version von ComfyUI. Bitte aktualisieren Sie, um alle Nodes zu verwenden.",
     "unknownVersion": "unbekannt"
   },
   "logsTerminal": {
@@ -3221,26 +3226,15 @@
     "done": "Fertig",
     "firstRun": {
       "nudge": {
-        "animate": {
-          "detail": "Bild zu Video · 5 s",
-          "title": "Animieren"
-        },
-        "body": "Jede beginnt mit dem Bild, das Sie gerade erstellt haben.",
-        "explore": "Alle Vorlagen durchsuchen",
-        "fallback": {
+        "dismiss": "Nicht jetzt",
+        "explore": "Vorlagen entdecken",
+        "noTour": {
           "body": "Durchsuchen Sie die Vorlagen und wählen Sie etwas zum Erstellen aus.",
           "title": "Hunderte weitere warten auf Sie"
         },
-        "loadFailed": "Diese Vorlage konnte nicht geladen werden. Bitte versuchen Sie es erneut.",
-        "restyle": {
-          "detail": "Partnermodell · Jeder kostenpflichtige Tarif",
-          "title": "Mit Nano Banana neu gestalten"
-        },
-        "title": "Ihr erstes Ergebnis. So geht es weiter.",
-        "upscale": {
-          "badge": "4x",
-          "detail": "Dasselbe Bild, mehr Details",
-          "title": "Hochskalieren"
+        "ran": {
+          "body": "Sie haben gerade Ihren ersten erstellt. Entdecken Sie, was Sie noch alles erstellen können.",
+          "title": "Das war einer von Hunderten"
         }
       },
       "prompt": {

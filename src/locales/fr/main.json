@@ -8,6 +8,11 @@
     "share": "Partager",
     "shareTooltip": "Partager le workflow"
   },
+  "agent": {
+    "askComfyAgent": "Demander à Comfy Agent",
+    "loadFailed": "Le panneau de l’agent n’a pas pu être chargé.",
+    "title": "Comfy Agent"
+  },
   "apiNodesCostBreakdown": {
     "costPerRun": "Coût par exécution",
     "title": "Nœud(s) API",
@@ -2409,8 +2414,8 @@
   },
   "loadWorkflowWarning": {
     "coreNodesFromVersion": "Nœuds principaux de la version {version} :",
-    "outdatedVersion": "Ce workflow a été créé avec une version plus récente de ComfyUI ({version}). Certains nœuds peuvent ne pas fonctionner correctement.",
-    "outdatedVersionGeneric": "Ce workflow a été créé avec une version plus récente de ComfyUI. Certains nœuds peuvent ne pas fonctionner correctement.",
+    "newerVersionRequired": "Certains nœuds nécessitent une version plus récente de ComfyUI (actuelle : {version}). Veuillez effectuer la mise à jour pour utiliser tous les nœuds.",
+    "newerVersionRequiredGeneric": "Certains nœuds nécessitent une version plus récente de ComfyUI. Veuillez effectuer la mise à jour pour utiliser tous les nœuds.",
     "unknownVersion": "inconnue"
   },
   "logsTerminal": {
@@ -3221,26 +3226,15 @@
     "done": "Terminé",
     "firstRun": {
       "nudge": {
-        "animate": {
-          "detail": "Image en vidéo · 5 s",
-          "title": "L’animer"
-        },
-        "body": "Chaque création commence avec l’image que vous venez de générer.",
-        "explore": "Parcourir tous les modèles",
-        "fallback": {
+        "dismiss": "Pas maintenant",
+        "explore": "Explorer les modèles",
+        "noTour": {
           "body": "Parcourez les modèles et choisissez quelque chose à créer.",
-          "title": "Des centaines d’autres vous attendent"
+          "title": "Il y en a des centaines d’autres"
         },
-        "loadFailed": "Impossible de charger ce modèle. Veuillez réessayer.",
-        "restyle": {
-          "detail": "Modèle partenaire · Tout forfait payant",
-          "title": "Restyliser avec Nano Banana"
-        },
-        "title": "Votre premier résultat. Voici la suite.",
-        "upscale": {
-          "badge": "4x",
-          "detail": "Même image, plus de détails",
-          "title": "L’agrandir"
+        "ran": {
+          "body": "Vous venez de créer votre premier. Découvrez ce que vous pouvez encore créer.",
+          "title": "Ce n’était qu’un parmi des centaines"
         }
       },
       "prompt": {

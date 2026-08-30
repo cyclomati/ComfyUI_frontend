@@ -8,6 +8,11 @@
     "share": "共有",
     "shareTooltip": "ワークフローを共有"
   },
+  "agent": {
+    "askComfyAgent": "Comfy Agentに質問",
+    "loadFailed": "エージェントパネルの読み込みに失敗しました。",
+    "title": "Comfy Agent"
+  },
   "apiNodesCostBreakdown": {
     "costPerRun": "実行あたりのコスト",
     "title": "APIノード",
@@ -2409,8 +2414,8 @@
   },
   "loadWorkflowWarning": {
     "coreNodesFromVersion": "バージョン{version}のコアノード:",
-    "outdatedVersion": "このワークフローは新しいバージョンのComfyUI（{version}）で作成されました。一部のノードが正しく動作しない場合があります。",
-    "outdatedVersionGeneric": "このワークフローは新しいバージョンのComfyUIで作成されました。一部のノードが正しく動作しない場合があります。",
+    "newerVersionRequired": "一部のノードには、より新しいバージョンのComfyUIが必要です（現在: {version}）。すべてのノードを使用するには更新してください。",
+    "newerVersionRequiredGeneric": "一部のノードには、より新しいバージョンのComfyUIが必要です。すべてのノードを使用するには更新してください。",
     "unknownVersion": "不明"
   },
   "logsTerminal": {
@@ -3221,26 +3226,15 @@
     "done": "完了",
     "firstRun": {
       "nudge": {
-        "animate": {
-          "detail": "画像から動画 · 5秒",
-          "title": "アニメーション化"
+        "dismiss": "今はしない",
+        "explore": "テンプレートを探索",
+        "noTour": {
+          "body": "テンプレートを閲覧して、作りたいものを選びましょう。",
+          "title": "まだ数百以上あります"
         },
-        "body": "どれも、作成したばかりの画像から始まります。",
-        "explore": "すべてのテンプレートを閲覧",
-        "fallback": {
-          "body": "テンプレートを閲覧して、作成するものを選びましょう。",
-          "title": "さらに数百種類あります"
-        },
-        "loadFailed": "そのテンプレートを読み込めませんでした。もう一度お試しください。",
-        "restyle": {
-          "detail": "パートナーモデル · 有料プランならどれでも利用可能",
-          "title": "Nano Bananaでスタイル変更"
-        },
-        "title": "最初の出力ができました。次はこちらです。",
-        "upscale": {
-          "badge": "4x",
-          "detail": "同じ画像を、より精細に",
-          "title": "高解像度化"
+        "ran": {
+          "body": "初めて作成しました。他に何を作れるか探してみましょう。",
+          "title": "これは数百あるうちの1つです"
         }
       },
       "prompt": {

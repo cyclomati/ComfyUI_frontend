@@ -7133,7 +7133,7 @@
       },
       "mode": {
         "name": "mode",
-        "tooltip": "'speed' è più veloce; 'precision' produce una sincronizzazione labiale di qualità superiore al doppio del prezzo."
+        "tooltip": "'speed' è più veloce; 'precision' produce un lip sync di qualità superiore a un prezzo più elevato."
       },
       "output_language": {
         "name": "output_language",

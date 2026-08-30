@@ -8,6 +8,11 @@
     "share": "Paylaş",
     "shareTooltip": "İş akışını paylaş"
   },
+  "agent": {
+    "askComfyAgent": "Comfy Agent'e Sor",
+    "loadFailed": "Aracı paneli yüklenemedi.",
+    "title": "Comfy Agent"
+  },
   "apiNodesCostBreakdown": {
     "costPerRun": "Çalıştırma başına maliyet",
     "title": "API Düğüm(ler)i",
@@ -2409,8 +2414,8 @@
   },
   "loadWorkflowWarning": {
     "coreNodesFromVersion": "Sürüm {version} çekirdek düğümleri:",
-    "outdatedVersion": "Bu iş akışı ComfyUI'nin daha yeni bir sürümüyle oluşturulmuş ({version}). Bazı düğümler düzgün çalışmayabilir.",
-    "outdatedVersionGeneric": "Bu iş akışı ComfyUI'nin daha yeni bir sürümüyle oluşturulmuş. Bazı düğümler düzgün çalışmayabilir.",
+    "newerVersionRequired": "Bazı düğümler ComfyUI'nin daha yeni bir sürümünü gerektirir (geçerli: {version}). Tüm düğümleri kullanmak için lütfen güncelleyin.",
+    "newerVersionRequiredGeneric": "Bazı düğümler ComfyUI'nin daha yeni bir sürümünü gerektirir. Tüm düğümleri kullanmak için lütfen güncelleyin.",
     "unknownVersion": "bilinmeyen"
   },
   "logsTerminal": {
@@ -3221,26 +3226,15 @@
     "done": "Bitti",
     "firstRun": {
       "nudge": {
-        "animate": {
-          "detail": "Görüntüden videoya · 5 sn.",
-          "title": "Canlandır"
-        },
-        "body": "Her biri az önce oluşturduğunuz görüntüyle başlar.",
-        "explore": "Tüm şablonlara göz at",
-        "fallback": {
+        "dismiss": "Şimdi değil",
+        "explore": "Şablonları keşfet",
+        "noTour": {
           "body": "Şablonlara göz atın ve oluşturmak için bir şey seçin.",
           "title": "Bunun gibi yüzlercesi daha var"
         },
-        "loadFailed": "Bu şablon yüklenemedi. Lütfen tekrar deneyin.",
-        "restyle": {
-          "detail": "İş ortağı modeli · Herhangi bir ücretli plan",
-          "title": "Nano Banana ile yeniden biçimlendir"
-        },
-        "title": "İlk çıktınız. Sırada neler var.",
-        "upscale": {
-          "badge": "4x",
-          "detail": "Aynı görüntü, daha fazla ayrıntı",
-          "title": "Yükselt"
+        "ran": {
+          "body": "İlkinizi az önce oluşturdunuz. Başka neler oluşturabileceğinizi keşfedin.",
+          "title": "Bu, yüzlercesinden biriydi"
         }
       },
       "prompt": {

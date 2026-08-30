@@ -7133,7 +7133,7 @@
       },
       "mode": {
         "name": "模式",
-        "tooltip": "「speed」速度較快；「precision」可產生更高品質的唇形同步，但價格為兩倍。"
+        "tooltip": "「speed」較快；「precision」可產生品質更高的唇形同步，但費用較高。"
       },
       "output_language": {
         "name": "目標語言",

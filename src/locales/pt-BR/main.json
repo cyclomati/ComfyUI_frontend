@@ -8,6 +8,11 @@
     "share": "Compartilhar",
     "shareTooltip": "Compartilhar fluxo de trabalho"
   },
+  "agent": {
+    "askComfyAgent": "Perguntar ao Agente Comfy",
+    "loadFailed": "Não foi possível carregar o painel do agente.",
+    "title": "Agente Comfy"
+  },
   "apiNodesCostBreakdown": {
     "costPerRun": "Custo por execução",
     "title": "Nó(s) de API",
@@ -2409,8 +2414,8 @@
   },
   "loadWorkflowWarning": {
     "coreNodesFromVersion": "Nós principais da versão {version}:",
-    "outdatedVersion": "Este fluxo de trabalho foi criado com uma versão mais recente do ComfyUI ({version}). Alguns nós podem não funcionar corretamente.",
-    "outdatedVersionGeneric": "Este fluxo de trabalho foi criado com uma versão mais recente do ComfyUI. Alguns nós podem não funcionar corretamente.",
+    "newerVersionRequired": "Alguns nós exigem uma versão mais recente do ComfyUI (atual: {version}). Atualize para usar todos os nós.",
+    "newerVersionRequiredGeneric": "Alguns nós exigem uma versão mais recente do ComfyUI. Atualize para usar todos os nós.",
     "unknownVersion": "desconhecida"
   },
   "logsTerminal": {
@@ -3221,26 +3226,15 @@
     "done": "Concluir",
     "firstRun": {
       "nudge": {
-        "animate": {
-          "detail": "Imagem para vídeo · 5 s",
-          "title": "Anime-a"
+        "dismiss": "Agora não",
+        "explore": "Explorar modelos",
+        "noTour": {
+          "body": "Navegue pelos modelos e escolha algo para criar.",
+          "title": "Há centenas de outros de onde esse veio"
         },
-        "body": "Cada um começa com a imagem que você acabou de criar.",
-        "explore": "Explorar todos os modelos",
-        "fallback": {
-          "body": "Explore os modelos e escolha algo para criar.",
-          "title": "Centenas de outras opções de onde esta veio"
-        },
-        "loadFailed": "Não foi possível carregar esse modelo. Tente novamente.",
-        "restyle": {
-          "detail": "Modelo parceiro · Qualquer plano pago",
-          "title": "Redefina o estilo com Nano Banana"
-        },
-        "title": "Seu primeiro resultado. Veja o que vem a seguir.",
-        "upscale": {
-          "badge": "4x",
-          "detail": "Mesma imagem, mais detalhes",
-          "title": "Aumente a resolução"
+        "ran": {
+          "body": "Você acabou de criar o seu primeiro. Explore o que mais pode criar.",
+          "title": "Esse foi um entre centenas"
         }
       },
       "prompt": {

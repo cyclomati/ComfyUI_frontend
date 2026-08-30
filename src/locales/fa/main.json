@@ -8,6 +8,11 @@
     "share": "اشتراک‌گذاری",
     "shareTooltip": "اشتراک‌گذاری گردش‌کار"
   },
+  "agent": {
+    "askComfyAgent": "از عامل Comfy بپرسید",
+    "loadFailed": "بارگذاری پنل عامل ناموفق بود.",
+    "title": "عامل Comfy"
+  },
   "apiNodesCostBreakdown": {
     "costPerRun": "هزینه هر اجرا",
     "title": "API Node(ها)",
@@ -2409,8 +2414,8 @@
   },
   "loadWorkflowWarning": {
     "coreNodesFromVersion": "nodeهای اصلی از نسخه {version}:",
-    "outdatedVersion": "این workflow با نسخه جدیدتری از ComfyUI ({version}) ایجاد شده است. برخی nodeها ممکن است به درستی کار نکنند.",
-    "outdatedVersionGeneric": "این workflow با نسخه جدیدتری از ComfyUI ایجاد شده است. برخی nodeها ممکن است به درستی کار نکنند.",
+    "newerVersionRequired": "برخی nodeها به نسخه جدیدتری از ComfyUI نیاز دارند (فعلی: {version}). برای استفاده از همه nodeها، لطفاً به‌روزرسانی کنید.",
+    "newerVersionRequiredGeneric": "برخی nodeها به نسخه جدیدتری از ComfyUI نیاز دارند. برای استفاده از همه nodeها، لطفاً به‌روزرسانی کنید.",
     "unknownVersion": "نامشخص"
   },
   "logsTerminal": {
@@ -3221,26 +3226,15 @@
     "done": "پایان",
     "firstRun": {
       "nudge": {
-        "animate": {
-          "detail": "تصویر به ویدیو · ۵ثانیه",
-          "title": "متحرک‌سازی"
-        },
-        "body": "هرکدام از تصویری که همین حالا ساختید شروع می‌شوند.",
-        "explore": "مرور همه قالب‌ها",
-        "fallback": {
+        "dismiss": "اکنون نه",
+        "explore": "کاوش قالب‌ها",
+        "noTour": {
           "body": "قالب‌ها را مرور کنید و چیزی برای ساختن انتخاب کنید.",
-          "title": "صدها مورد دیگر از همین نوع"
+          "title": "صدها مورد دیگر از همین دست"
         },
-        "loadFailed": "آن قالب بارگیری نشد. لطفاً دوباره تلاش کنید.",
-        "restyle": {
-          "detail": "مدل شریک · هر طرح پولی",
-          "title": "بازسبک‌سازی با Nano Banana"
-        },
-        "title": "اولین خروجی شما. مرحله بعدی این است.",
-        "upscale": {
-          "badge": "۴×",
-          "detail": "همان تصویر، جزئیات بیشتر",
-          "title": "افزایش وضوح"
+        "ran": {
+          "body": "شما به‌تازگی اولین موردتان را ساختید. ببینید چه چیزهای دیگری می‌توانید بسازید.",
+          "title": "این یکی از صدها مورد بود"
         }
       },
       "prompt": {

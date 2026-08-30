@@ -7133,7 +7133,7 @@
       },
       "mode": {
         "name": "모드",
-        "tooltip": "'speed'는 더 빠르며, 'precision'은 두 배의 비용으로 더 높은 품질의 입 모양 동기화를 제공합니다."
+        "tooltip": "'speed'는 더 빠르며, 'precision'은 더 높은 비용으로 더 고품질의 립싱크를 제공합니다."
       },
       "output_language": {
         "name": "출력 언어",

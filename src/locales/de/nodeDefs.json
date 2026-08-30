@@ -7133,7 +7133,7 @@
       },
       "mode": {
         "name": "mode",
-        "tooltip": "'speed' ist schneller; 'precision' erzeugt Lippensynchronisierung höherer Qualität zum doppelten Preis."
+        "tooltip": "'speed' ist schneller; 'precision' erzeugt hochwertigeren Lip Sync zu einem höheren Preis."
       },
       "output_language": {
         "name": "output_language",

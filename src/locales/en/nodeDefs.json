@@ -7138,7 +7138,7 @@
       },
       "mode": {
         "name": "mode",
-        "tooltip": "'speed' is faster; 'precision' produces higher-quality lip sync at twice the price."
+        "tooltip": "'speed' is faster; 'precision' produces higher-quality lip sync at a higher price."
       },
       "translate_audio_only": {
         "name": "translate_audio_only",
