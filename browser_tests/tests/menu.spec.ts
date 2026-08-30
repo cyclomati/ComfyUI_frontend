@@ -88,7 +88,7 @@ test.describe('Menu', { tag: '@ui' }, () => {
       await bottomPanelItem.waitFor({ state: 'visible' })
 
       // Get checkmark icon element
-      const checkmark = bottomPanelItem.locator('i').first()
+      const checkmark = bottomPanelItem.getByTestId('menu-item-indicator')
 
       // Check initial state of bottom panel (it's initially hidden)
       const { bottomPanel } = comfyPage
@@ -136,9 +136,10 @@ test.describe('Menu', { tag: '@ui' }, () => {
       await comfyPage.menu.topbar.openTopbarMenu()
       const workflowMenuItem = comfyPage.menu.topbar.getMenuItem('File')
       await workflowMenuItem.hover()
-      const exportTag = comfyPage.page.locator('.keybinding-tag', {
-        hasText: 'Ctrl + s'
-      })
+      const exportTag = comfyPage.menu.topbar
+        .getVisibleSubmenu()
+        .getByRole('menuitem', { name: 'Save', exact: true })
+        .getByText('Ctrl + s', { exact: true })
       await expect(exportTag).toHaveCount(1)
     })
 
@@ -196,9 +197,9 @@ test.describe('Menu', { tag: '@ui' }, () => {
       await expect(async () => {
         await expect(menu).toBeVisible()
         await expect(themeSubmenu).toBeVisible()
-        await expect(lightThemeItem.locator('.pi-check')).not.toHaveClass(
-          /invisible/
-        )
+        await expect(
+          lightThemeItem.getByTestId('menu-item-indicator')
+        ).not.toHaveClass(/invisible/)
       }).toPass({ timeout: 5000 })
 
       // Screenshot with light theme active
@@ -224,11 +225,11 @@ test.describe('Menu', { tag: '@ui' }, () => {
         await expect(menu).toBeVisible()
         await expect(themeItems2.submenu).toBeVisible()
         await expect(
-          themeItems2.darkTheme.locator('.pi-check')
+          themeItems2.darkTheme.getByTestId('menu-item-indicator')
         ).not.toHaveClass(/invisible/)
-        await expect(themeItems2.lightTheme.locator('.pi-check')).toHaveClass(
-          /invisible/
-        )
+        await expect(
+          themeItems2.lightTheme.getByTestId('menu-item-indicator')
+        ).toHaveClass(/invisible/)
       }).toPass({ timeout: 5000 })
 
       // Screenshot with dark theme active
