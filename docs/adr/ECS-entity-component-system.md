@@ -355,7 +355,7 @@ For the phased migration roadmap with shipping milestones, see [ECS Migration Pl
 
 [ADR-LAYOUT](LAYOUT-crdt-layout-intent-and-local-measurement.md) defines the target policy that
 durable graph-domain mutations flow through serializable, idempotent commands.
-This ADR (0008) defines the entity data model and dedicated stores that hold it.
+ADR-ECS defines the entity data model and dedicated stores that hold it.
 They are complementary architectural layers:
 
 - **Commands** (ADR-LAYOUT) describe the target mutation intent — serializable

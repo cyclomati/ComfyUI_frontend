@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, test } from 'vitest'
 
-import { validateAdrDirectory } from './check-adrs'
+import { findLegacyAdrReferences, validateAdrDirectory } from './check-adrs'
 
 const temporaryDirectories: string[] = []
 
@@ -58,5 +58,27 @@ describe('validateAdrDirectory', () => {
     expect(() => validateAdrDirectory(directory)).toThrow(
       'ADR index must contain every ADR exactly once'
     )
+  })
+})
+
+describe('findLegacyAdrReferences', () => {
+  test.for(
+    [
+      ['ecosystem (ADR-LAYOUT / ', '0008)'],
+      ['current in ADR-LAYOUT/', '0008 and inventory'],
+      ['This ADR (', '0008) defines the entity data model'],
+      ['See ADR-', '0008 for details'],
+      ['See docs/adr/', '0008-entity-component-system.md']
+    ].map((parts) => parts.join(''))
+  )('detects legacy reference form: %s', (reference) => {
+    expect(findLegacyAdrReferences(reference)).toEqual([
+      { line: reference, lineNumber: 1 }
+    ])
+  })
+
+  test('does not confuse an amendment date with an ADR number', () => {
+    expect(
+      findLegacyAdrReferences('ADR-LAYOUT amendment (2026-08-23)')
+    ).toEqual([])
   })
 })

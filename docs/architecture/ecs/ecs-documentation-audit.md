@@ -256,7 +256,7 @@ The audit corrections were applied in priority order:
 
 1. LinkStore primary identity, slot-accessor status, and duplicate-link load
    behavior are current in ADR-ECS and lifecycle documentation.
-2. Layout keying and command scope are current in ADR-LAYOUT/0008 and inventory
+2. Layout keying and command scope are current in ADR-LAYOUT/ADR-ECS and inventory
    tables.
 3. Computed `originIndex` pseudocode and the removed badge store are historical.
 4. Stale lifecycle diagrams were replaced by current bridge facts and explicit

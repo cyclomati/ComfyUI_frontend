@@ -7,7 +7,8 @@ const ADR_FILE_PATTERN =
   /^([A-Z][A-Z0-9]{1,11})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$/
 const INDEX_ROW_PATTERN =
   /^\| \[([A-Z][A-Z0-9]{1,11})\]\(([^)]+\.md)\)\s*\| ([^|]+?)\s*\| (Proposed|Accepted|Rejected|Deprecated|Superseded)\s*\| (\d{4}-\d{2}-\d{2}) \|$/
-const LEGACY_REFERENCE_PATTERN = /ADR[- ]?\d{4}|ADR\d{4}|(?:docs\/)?adr\/\d{4}-/
+const LEGACY_REFERENCE_PATTERN =
+  /ADR(?:[- ]?\d{4}(?!-\d{2})|(?:-[A-Z][A-Z0-9]*)?\s*(?:\/\s*|\(\s*)\d{4}(?!-\d{2}))|(?:docs\/)?adr\/\d{4}-/
 
 type Adr = {
   date: string
@@ -16,6 +17,17 @@ type Adr = {
   status: string
   title: string
 }
+
+type LegacyReference = {
+  line: string
+  lineNumber: number
+}
+
+export const findLegacyAdrReferences = (contents: string): LegacyReference[] =>
+  contents
+    .split('\n')
+    .map((line, index) => ({ line, lineNumber: index + 1 }))
+    .filter(({ line }) => LEGACY_REFERENCE_PATTERN.test(line))
 
 const getMetadata = (directory: string, filename: string): Adr => {
   const id = ADR_FILE_PATTERN.exec(filename)?.[1]
@@ -103,10 +115,8 @@ const checkLegacyReferences = (repositoryRoot: string): void => {
     const contents = readFileSync(absolutePath, 'utf8')
     if (contents.includes('\0')) continue
 
-    for (const [index, line] of contents.split('\n').entries()) {
-      if (LEGACY_REFERENCE_PATTERN.test(line)) {
-        matches.push(`${filename}:${index + 1}:${line.trim()}`)
-      }
+    for (const { line, lineNumber } of findLegacyAdrReferences(contents)) {
+      matches.push(`${filename}:${lineNumber}:${line.trim()}`)
     }
   }
 
@@ -124,5 +134,5 @@ if (
   const repositoryRoot = process.cwd()
   validateAdrDirectory(join(repositoryRoot, 'docs/adr'))
   checkLegacyReferences(repositoryRoot)
-  console.log('ADR naming and index validation passed')
+  process.stdout.write('ADR naming and index validation passed\n')
 }
