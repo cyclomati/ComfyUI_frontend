@@ -73,10 +73,6 @@ vi.mock(
   }
 )
 
-vi.mock('@/composables/useStablePrimeVueSplitterSizer', () => ({
-  useStablePrimeVueSplitterSizer: () => ({ onResizeEnd: vi.fn() })
-}))
-
 function setViewport(width: number) {
   const happyDOM = (window as unknown as { happyDOM?: DetachedWindowAPI })
     .happyDOM
@@ -96,8 +92,9 @@ function leafStub(testId: string) {
 }
 
 const baseStubs = {
-  Splitter: passthroughStub,
+  SplitterGroup: passthroughStub,
   SplitterPanel: passthroughStub,
+  SplitterResizeHandle: passthroughStub,
   MobileDisplay: leafStub('mobile-display'),
   AppBuilder: leafStub('app-builder'),
   AppModeToolbar: leafStub('app-mode-toolbar'),

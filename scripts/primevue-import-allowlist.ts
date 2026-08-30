@@ -1,5 +1,4 @@
 export const primeVueImportAllowlist = [
-  'src/components/LiteGraphCanvasSplitterOverlay.vue',
   'src/components/actionbar/ComfyRunButton/ComfyQueueButton.test.ts',
   'src/components/breadcrumb/SubgraphBreadcrumb.vue',
   'src/components/common/InputKnob.vue',
@@ -53,8 +52,6 @@ export const primeVueImportAllowlist = [
   'src/components/topbar/TopbarBadge.test.ts',
   'src/composables/useCopyToClipboard.ts',
   'src/composables/useReconnectingNotification.ts',
-  'src/composables/useStablePrimeVueSplitterSizer.test.ts',
-  'src/composables/useStablePrimeVueSplitterSizer.ts',
   'src/main.ts',
   'src/platform/assets/composables/useMediaAssetActions.test.ts',
   'src/platform/assets/composables/useMediaAssetActions.ts',
@@ -115,7 +112,6 @@ export const primeVueImportAllowlist = [
   'src/scripts/app.ts',
   'src/stores/dialogStore.ts',
   'src/types/treeExplorerTypes.ts',
-  'src/views/LinearView.vue',
   'src/views/UserSelectView.test.ts',
   'src/workbench/extensions/manager/components/manager/PackVersionBadge.test.ts',
   'src/workbench/extensions/manager/components/manager/PackVersionSelectorPopover.test.ts',
