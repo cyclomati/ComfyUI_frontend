@@ -351,6 +351,7 @@ onUpdated(() => {
   padding: 0;
   border-right-color: var(--border-color);
   min-width: 90px;
+  font-weight: 500;
 }
 
 .overflow-arrow {
