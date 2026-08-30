@@ -169,7 +169,9 @@ test.describe('Node library sidebar', () => {
     await expect(tab.getFolder('foo')).toBeVisible()
 
     await tab.getFolder('foo').click({ button: 'right' })
-    await comfyPage.page.getByRole('menuitem', { name: 'Rename' }).click()
+    await comfyPage.page
+      .getByRole('menuitem', { name: 'Rename', exact: true })
+      .click()
     await renameInlineFolder(comfyPage, 'bar')
 
     await expectBookmarks(comfyPage, ['bar/'])
@@ -334,7 +336,9 @@ test.describe('Node library sidebar', () => {
     const tab = comfyPage.menu.nodeLibraryTab
     await expect(tab.getFolder('foo')).toBeVisible()
     await tab.getFolder('foo').click({ button: 'right' })
-    await comfyPage.page.getByRole('menuitem', { name: 'Rename' }).click()
+    await comfyPage.page
+      .getByRole('menuitem', { name: 'Rename', exact: true })
+      .click()
     await renameInlineFolder(comfyPage, 'bar')
     await comfyPage.nextFrame()
     await expect
