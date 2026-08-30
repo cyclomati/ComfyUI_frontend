@@ -5,7 +5,14 @@ import type { Ref } from 'vue'
 
 const mocks = vi.hoisted(() => ({
   capturedExtensions: [] as ComfyExtension[],
-  agentStore: { enabled: false, isOpen: true, close: vi.fn() },
+  agentStore: {
+    enabled: false,
+    isOpen: true,
+    gateSettled: false,
+    flagDelivered: false,
+    close: vi.fn()
+  },
+  serverFeatureFlagsReceived: null as Ref<boolean> | null,
   canvasStore: { updateSelectedItems: vi.fn() },
   getNodeByLocatorId: vi.fn(),
   flagEnabled: null as Ref<boolean | undefined> | null,
@@ -33,6 +40,14 @@ vi.mock('@/services/extensionService', () => ({
     }
   })
 }))
+
+vi.mock('@/scripts/api', async () => {
+  const { ref } = await import('vue')
+  mocks.serverFeatureFlagsReceived = ref(false)
+  return {
+    api: { serverFeatureFlagsReceived: mocks.serverFeatureFlagsReceived }
+  }
+})
 
 vi.mock('@/workbench/extensions/agent/stores/agent/agentPanelStore', () => ({
   useAgentPanelStore: () => mocks.agentStore
@@ -93,6 +108,7 @@ describe('AgentPanel extension flag gate', () => {
     mocks.capturedExtensions.length = 0
     mocks.agentStore.close.mockClear()
     mocks.agentStore.enabled = false
+    mocks.agentStore.flagDelivered = false
     if (mocks.flagEnabled) mocks.flagEnabled.value = undefined
     mocks.registerTracker.mockClear()
     mocks.canvasStore.updateSelectedItems.mockClear()
@@ -131,6 +147,14 @@ describe('AgentPanel extension flag gate', () => {
     mocks.flagEnabled!.value = true
     await vi.waitFor(() => expect(mocks.agentStore.enabled).toBe(true))
     expect(mocks.agentStore.enabled).toBe(true)
+  })
+
+  it('marks the first server feature flag delivery independently of gate setup', async () => {
+    await loadEntryAndSetup()
+    expect(mocks.agentStore.flagDelivered).toBe(false)
+
+    mocks.serverFeatureFlagsReceived!.value = true
+    await vi.waitFor(() => expect(mocks.agentStore.flagDelivered).toBe(true))
   })
 
   it('disables the panel without closing it when the flag flips back to false', async () => {

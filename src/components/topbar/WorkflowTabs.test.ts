@@ -88,6 +88,7 @@ const agentPanelHolder = vi.hoisted(() => ({
     isOpen: { value: boolean }
     enabled: { value: boolean }
     gateSettled: { value: boolean }
+    flagDelivered: { value: boolean }
     toggle: ReturnType<typeof vi.fn>
   }
 }))
@@ -99,6 +100,7 @@ vi.mock(
       isOpen: ref(false),
       enabled: ref(false),
       gateSettled: ref(false),
+      flagDelivered: ref(false),
       toggle: vi.fn(() => {
         agentPanelHolder.store.isOpen.value =
           !agentPanelHolder.store.isOpen.value
@@ -269,5 +271,17 @@ describe('WorkflowTabs agent entry button', () => {
     await nextTick()
 
     expect(actions).toHaveAttribute('data-agent-gate-settled', 'true')
+  })
+
+  it('exposes the flag-delivered signal only after the first server delivery', async () => {
+    renderComponent()
+
+    const actions = screen.getByTestId('integrated-tab-bar-actions')
+    expect(actions).not.toHaveAttribute('data-agent-flag-delivered')
+
+    agentPanelHolder.store.flagDelivered.value = true
+    await nextTick()
+
+    expect(actions).toHaveAttribute('data-agent-flag-delivered', 'true')
   })
 })

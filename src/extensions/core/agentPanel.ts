@@ -8,6 +8,7 @@ import { registerWorkflowTabActivityTracker } from '@/workbench/extensions/agent
 import { useAgentPanelStore } from '@/workbench/extensions/agent/stores/agent/agentPanelStore'
 import { useWorkflowStore } from '@/platform/workflow/management/stores/workflowStore'
 import { useCanvasStore } from '@/renderer/core/canvas/canvasStore'
+import { api } from '@/scripts/api'
 import { useExtensionService } from '@/services/extensionService'
 import { useAgentNodeSelectionStore } from '@/stores/agentNodeSelectionStore'
 import { getNodeByLocatorId } from '@/utils/graphTraversalUtil'
@@ -70,6 +71,14 @@ function setupFlagGate(): void {
     (enabled) => {
       const forceInDev = import.meta.env.MODE === 'development'
       agentPanelStore.enabled = forceInDev || enabled === true
+    },
+    { immediate: true }
+  )
+
+  watch(
+    api.serverFeatureFlagsReceived,
+    (delivered) => {
+      agentPanelStore.flagDelivered = delivered
     },
     { immediate: true }
   )
