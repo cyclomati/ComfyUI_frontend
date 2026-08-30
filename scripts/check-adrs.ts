@@ -7,6 +7,7 @@ const ADR_FILE_PATTERN =
   /^([A-Z][A-Z0-9]{1,11})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$/
 const INDEX_ROW_PATTERN =
   /^\| \[([A-Z][A-Z0-9]{1,11})\]\(([^)]+\.md)\)\s*\| ([^|]+?)\s*\| (Proposed|Accepted|Rejected|Deprecated|Superseded)\s*\| (\d{4}-\d{2}-\d{2}) \|$/
+const INDEX_ROW_CANDIDATE_PATTERN = /^\|\s*\[[^\]]+\]\([^)]+\.md\)\s*\|/
 const LEGACY_REFERENCE_PATTERN =
   /ADR(?:[- ]?\d{4}(?!-\d{2})|(?:-[A-Z][A-Z0-9]*)?\s*(?:\/\s*|\(\s*)\d{4}(?!-\d{2}))|(?:docs\/)?adr\/\d{4}-/
 
@@ -78,8 +79,20 @@ export const validateAdrDirectory = (directory: string): void => {
     }
   }
 
-  const indexRows = readFileSync(join(directory, 'README.md'), 'utf8')
-    .split('\n')
+  const indexLines = readFileSync(join(directory, 'README.md'), 'utf8').split(
+    '\n'
+  )
+  const indexRowCandidates = indexLines.filter((line) =>
+    INDEX_ROW_CANDIDATE_PATTERN.test(line)
+  )
+  const invalidIndexRows = indexRowCandidates.filter(
+    (line) => !INDEX_ROW_PATTERN.test(line)
+  )
+  if (invalidIndexRows.length) {
+    throw new Error(`Invalid ADR index rows:\n${invalidIndexRows.join('\n')}`)
+  }
+
+  const indexRows = indexRowCandidates
     .map((line) => INDEX_ROW_PATTERN.exec(line))
     .filter((match): match is RegExpExecArray => match !== null)
     .map((match) => ({

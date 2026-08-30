@@ -59,6 +59,21 @@ describe('validateAdrDirectory', () => {
       'ADR index must contain every ADR exactly once'
     )
   })
+
+  test('rejects an additional legacy index row', () => {
+    const directory = createFixture()
+    writeFileSync(
+      join(directory, 'README.md'),
+      [
+        '| [ECS](ECS-entity-component-system.md) | Entity Component System | Proposed | 2026-03-23 |',
+        '| [0008](0008-entity.md) | Legacy duplicate | Proposed | 2026-03-23 |'
+      ].join('\n')
+    )
+
+    expect(() => validateAdrDirectory(directory)).toThrow(
+      'Invalid ADR index rows'
+    )
+  })
 })
 
 describe('findLegacyAdrReferences', () => {
