@@ -1,11 +1,11 @@
 <template>
   <div class="flex flex-col gap-1">
     <div class="max-h-192 rounded-sm border p-4">
-      <Chart
+      <WidgetChartCanvas
         :type="chartType"
         :data="chartData"
         :options="chartOptions"
-        :aria-label="`${widget.name || $t('g.chart')} - ${chartType} ${$t('g.chartLowercase')}`"
+        :label="`${widget.name || $t('g.chart')} - ${chartType} ${$t('g.chartLowercase')}`"
       />
     </div>
   </div>
@@ -13,12 +13,13 @@
 
 <script setup lang="ts">
 import type { ChartData } from 'chart.js'
-import Chart from 'primevue/chart'
 import { computed } from 'vue'
 
 import type { IWidgetOptions } from '@/lib/litegraph/src/types/widgets'
 import type { ChartInputSpec } from '@/schemas/nodeDef/nodeDefSchemaV2'
 import type { SimplifiedWidget } from '@/types/simplifiedWidget'
+
+import WidgetChartCanvas from './WidgetChartCanvas.vue'
 
 type ChartWidgetOptions = NonNullable<ChartInputSpec['options']> &
   IWidgetOptions
