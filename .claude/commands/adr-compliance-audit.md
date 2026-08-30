@@ -12,14 +12,14 @@ Audit the current changes (or a specified PR) for compliance with Architecture D
 Read these documents for context:
 
 ```
-docs/adr/CLMC-crdt-based-layout-system.md
+docs/adr/LAYOUT-crdt-layout-intent-and-local-measurement.md
 docs/adr/ECS-entity-component-system.md
 docs/architecture/ecs-target-architecture.md
 docs/architecture/ecs-migration-plan.md
 docs/architecture/appendix-critical-analysis.md
 ```
 
-### Check A: Command Pattern (ADR-CLMC)
+### Check A: Command Pattern (ADR-LAYOUT)
 
 Every entity state mutation must be a **serializable, idempotent, deterministic command** — replayable, undoable, transmittable over CRDT.
 
@@ -62,7 +62,7 @@ Reference: 40+ custom node repos depend on these (rgthree-comfy, ComfyUI-Impact-
 3. Check the diff for contradictions
 4. Only flag ACTUAL violations in changed code
 
-**Skip list**: ADR-FPUL (Rejected — Fork PrimeVue)
+**Skip list**: ADR-PRIMEVUE (Rejected — Fork PrimeVue)
 
 ## Step 4: Generate Report
 

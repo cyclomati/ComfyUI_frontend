@@ -2,7 +2,7 @@
 
 Status: Current implementation audit
 Verified: 2026-08-20 against `13a302eadda871b939b148ecb87e3d845ceefff2`
-Scope: ADR-CLMC, ADR-ECS, and architecture documents changed by PR 14246
+Scope: ADR-LAYOUT, ADR-ECS, and architecture documents changed by PR 14246
 
 The audit uses four document states:
 
@@ -19,7 +19,7 @@ sections below preserve the findings and the wording used to resolve them.
 
 ## ADR roles and current accuracy
 
-### ADR-CLMC: centralized CRDT layout
+### ADR-LAYOUT: centralized CRDT layout
 
 The ADR is the decision authority for canonical geometry in `layoutStore`, Yjs
 storage, mutation operations, and renderer-independent layout state.
@@ -136,7 +136,7 @@ are labeled **Target** wherever diagrammed.
 ### 5. Layout keying tables described raw node/link IDs
 
 The audit found variants of "raw node/link IDs; scoped group/reroute IDs" in
-inventory tables. ADR-CLMC's amendment and the
+inventory tables. ADR-LAYOUT's amendment and the
 implementation scope nodes, groups, and reroutes with
 `makeScopedLayoutKey(rootGraphId, id)`. Link segment geometry uses its separate
 segment cache key and is not CRDT link topology.
@@ -256,7 +256,7 @@ The audit corrections were applied in priority order:
 
 1. LinkStore primary identity, slot-accessor status, and duplicate-link load
    behavior are current in ADR-ECS and lifecycle documentation.
-2. Layout keying and command scope are current in ADR-CLMC/0008 and inventory
+2. Layout keying and command scope are current in ADR-LAYOUT/0008 and inventory
    tables.
 3. Computed `originIndex` pseudocode and the removed badge store are historical.
 4. Stale lifecycle diagrams were replaced by current bridge facts and explicit

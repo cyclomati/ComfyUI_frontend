@@ -1,4 +1,4 @@
-# ADR-RCM: Restructure ComfyUI_frontend as a monorepo
+# ADR-MONOREPO: Adopt a pnpm Workspace Monorepo
 
 Date: 2025-08-25
 
@@ -6,7 +6,7 @@ Date: 2025-08-25
 
 Accepted (Nx tooling choice superseded by [ADR-RNO](RNO-remove-nx-orchestration.md))
 
-<!-- [Proposed | Accepted | Rejected | Deprecated | Superseded by [ADR-ACRONYM](ACRONYM-title.md)] -->
+<!-- [Proposed | Accepted | Rejected | Deprecated | Superseded by [ADR-IDENTIFIER](IDENTIFIER-title.md)] -->
 
 ## Context
 

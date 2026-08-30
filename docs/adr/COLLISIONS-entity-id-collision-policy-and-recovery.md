@@ -1,4 +1,4 @@
-# ADR-ERCRB: Entity Registration Collision and Recovery Boundaries
+# ADR-COLLISIONS: Entity ID Collision Policy and Recovery
 
 Date: 2026-08-24
 

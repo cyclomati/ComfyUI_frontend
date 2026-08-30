@@ -32,7 +32,7 @@ afterEach(() => {
 })
 
 describe('validateAdrDirectory', () => {
-  test('accepts acronym-based ADRs with a matching index', () => {
+  test('accepts identifier-based ADRs with a matching index', () => {
     expect(() => validateAdrDirectory(createFixture())).not.toThrow()
   })
 

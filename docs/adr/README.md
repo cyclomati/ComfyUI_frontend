@@ -8,36 +8,37 @@ An Architecture Decision Record captures an important architectural decision mad
 
 ## ADR Index
 
-| ADR                                                                             | Title                                                            | Status   | Date       |
-| ------------------------------------------------------------------------------- | ---------------------------------------------------------------- | -------- | ---------- |
-| [AF](AF-adopt-fallow.md)                                                        | Adopt Fallow                                                     | Proposed | 2026-06-29 |
-| [BRR](BRR-bound-renderer-reactivity.md)                                         | Bound Renderer Reactivity                                        | Proposed | 2026-08-26 |
-| [BTACWS](BTACWS-billing-telemetry-attempt-correlation-and-workspace-scoping.md) | Billing Telemetry Attempt Correlation and Workspace Scoping      | Proposed | 2026-07-28 |
-| [CCCI](CCCI-classify-and-coalesce-canvas-invalidation.md)                       | Classify and Coalesce Canvas Invalidation                        | Proposed | 2026-08-26 |
-| [CLMC](CLMC-crdt-based-layout-system.md)                                        | Centralized Layout Management with CRDT                          | Proposed | 2025-08-27 |
-| [CRNCV](CRNCV-cloud-release-notes-use-comfyui-version.md)                       | Cloud Release Notes Use the ComfyUI Version                      | Accepted | 2026-07-13 |
-| [DCLCA](DCLCA-derived-credential-lifecycle.md)                                  | Derived Credential Lifecycle for Cloud Auth                      | Proposed | 2026-07-09 |
-| [ECS](ECS-entity-component-system.md)                                           | Entity Component System                                          | Proposed | 2026-03-23 |
-| [ERCRB](ERCRB-entity-registration-collision-and-recovery-boundaries.md)         | Entity Registration Collision and Recovery Boundaries            | Proposed | 2026-08-24 |
-| [FPUL](FPUL-fork-primevue-ui-library.md)                                        | Fork PrimeVue UI Library                                         | Rejected | 2025-08-27 |
-| [IBSROSS](IBSROSS-id-based-slot-records-are-the-slot-destination.md)            | ID-Based Slot Records Own Slot State                             | Accepted | 2026-08-24 |
-| [MLCF](MLCF-merge-litegraph-into-frontend.md)                                   | Merge LiteGraph.js into ComfyUI Frontend                         | Accepted | 2025-08-05 |
-| [NEOPS](NEOPS-node-execution-output-passthrough-schema.md)                      | NodeExecutionOutput Passthrough Schema Design                    | Accepted | 2026-03-11 |
-| [NIRM](NIRM-node-id-reminting-at-the-merge-boundary.md)                         | Node-ID Reminting at the Merge Boundary                          | Proposed | 2026-08-25 |
-| [PMCIP](PMCIP-performance-measurement-and-ci-policy.md)                         | Performance Measurement and CI Policy                            | Proposed | 2026-08-26 |
-| [PNCPL](PNCPL-primitive-node-copy-paste-lifecycle.md)                           | PrimitiveNode Copy/Paste Lifecycle                               | Proposed | 2026-02-22 |
-| [RCM](RCM-monorepo-conversion.md)                                               | Restructure ComfyUI_frontend as a monorepo                       | Accepted | 2025-08-25 |
-| [RIMVE](RIMVE-remove-importmap-for-vue-extensions.md)                           | Remove Import Map for Vue Extensions                             | Accepted | 2025-12-13 |
-| [RNO](RNO-remove-nx-orchestration.md)                                           | Remove Nx Orchestration                                          | Accepted | 2026-05-19 |
-| [SPWLI](SPWLI-subgraph-promoted-widgets-use-linked-inputs.md)                   | Subgraph promoted widgets use linked inputs                      | Proposed | 2026-05-05 |
-| [TSS](TSS-telemetry-service-selection.md)                                       | Telemetry Service Selection: PostHog, Datadog RUM, Snowflake/Hex | Accepted | 2026-07-28 |
-| [URD](URD-unified-recoverable-diagnostics.md)                                   | Unified Recoverable Diagnostics                                  | Proposed | 2026-08-25 |
-| [WELLB](WELLB-widget-entities-and-legacy-behavior-boundary.md)                  | Widget Entities and Legacy Behavior Boundary                     | Proposed | 2026-08-26 |
+| ADR                                                                              | Title                                                          | Status   | Date       |
+| -------------------------------------------------------------------------------- | -------------------------------------------------------------- | -------- | ---------- |
+| [AGENT](AGENT-graph-activation-and-document-objects-for-in-app-agent-targets.md) | Graph Activation and Document Objects for In-App Agent Targets | Proposed | 2026-08-28 |
+| [AUTH](AUTH-cloud-credential-lifecycle-invariants.md)                            | Cloud Credential Lifecycle Invariants                          | Proposed | 2026-07-09 |
+| [BUNDLE](BUNDLE-bundle-vue-dependencies-in-extensions.md)                        | Bundle Vue Dependencies in Extensions                          | Accepted | 2025-12-13 |
+| [CLOUD](CLOUD-cloud-release-notes-follow-the-comfyui-version.md)                 | Cloud Release Notes Follow the ComfyUI Version                 | Accepted | 2026-07-13 |
+| [COLLISIONS](COLLISIONS-entity-id-collision-policy-and-recovery.md)              | Entity ID Collision Policy and Recovery                        | Proposed | 2026-08-24 |
+| [CONTEXT](CONTEXT-billing-attempt-context-and-workspace-scope.md)                | Billing Attempt Context and Workspace Scope                    | Proposed | 2026-07-28 |
+| [COPY](COPY-preserve-primitive-widget-values-across-copy-and-paste.md)           | Preserve Primitive Widget Values Across Copy and Paste         | Proposed | 2026-02-22 |
+| [ECS](ECS-entity-component-system.md)                                            | Entity Component System                                        | Proposed | 2026-03-23 |
+| [FALLOW](FALLOW-adopt-fallow-with-new-only-baselines.md)                         | Adopt Fallow with New-Only Baselines                           | Proposed | 2026-06-29 |
+| [FAR](FAR-frame-atomic-rendering.md)                                             | Frame-Atomic Rendering                                         | Proposed | 2026-08-26 |
+| [INVALIDATION](INVALIDATION-classified-frame-coalesced-canvas-invalidation.md)   | Classified, Frame-Coalesced Canvas Invalidation                | Proposed | 2026-08-26 |
+| [LAYOUT](LAYOUT-crdt-layout-intent-and-local-measurement.md)                     | CRDT Layout Intent and Local Measurement                       | Proposed | 2025-08-27 |
+| [LITEGRAPH](LITEGRAPH-integrate-litegraph-into-the-frontend.md)                  | Integrate LiteGraph into the Frontend                          | Accepted | 2025-08-05 |
+| [MINT](MINT-merge-identity-for-node-transfers.md)                                | Merge Identity for Node Transfers                              | Proposed | 2026-08-25 |
+| [MONOREPO](MONOREPO-adopt-a-pnpm-workspace-monorepo.md)                          | Adopt a pnpm Workspace Monorepo                                | Accepted | 2025-08-25 |
+| [OPEN](OPEN-output-passthrough-for-extensible-nodes.md)                          | Output Passthrough for Extensible Nodes                        | Accepted | 2026-03-11 |
+| [PERF](PERF-performance-evidence-and-regression-framework.md)                    | Performance Evidence and Regression Framework                  | Proposed | 2026-08-26 |
+| [PRIMEVUE](PRIMEVUE-use-primevue-without-a-fork.md)                              | Use PrimeVue Without a Fork                                    | Rejected | 2025-08-27 |
+| [PROMOTION](PROMOTION-represent-promoted-widgets-as-linked-inputs.md)            | Represent Promoted Widgets as Linked Inputs                    | Proposed | 2026-05-05 |
+| [RED](RED-recoverable-event-diagnostics.md)                                      | Recoverable Event Diagnostics                                  | Proposed | 2026-08-25 |
+| [RNO](RNO-remove-nx-orchestration.md)                                            | Remove Nx Orchestration                                        | Accepted | 2026-05-19 |
+| [SLOTS](SLOTS-slot-records-as-the-source-of-truth.md)                            | Slot Records as the Source of Truth                            | Accepted | 2026-08-24 |
+| [TRAC](TRAC-telemetry-routing-across-consumers.md)                               | Telemetry Routing Across Consumers                             | Accepted | 2026-07-28 |
+| [WELL](WELL-widget-entities-with-a-legacy-layer.md)                              | Widget Entities with a Legacy Layer                            | Proposed | 2026-08-26 |
 
 ## Creating a New ADR
 
-1. Choose a unique, memorable acronym derived from the ADR title
-2. Name the file `<ACRONYM>-descriptive-title.md`, using an all-caps acronym
+1. Choose a unique, memorable identifier derived from the ADR title
+2. Name the file `<IDENTIFIER>-descriptive-title.md`, using an all-caps identifier
 3. Fill in all sections
 4. Update this index
 5. Submit as part of your PR
@@ -45,13 +46,13 @@ An Architecture Decision Record captures an important architectural decision mad
 ## ADR Template
 
 ```markdown
-# ADR-ACRONYM: Title
+# ADR-IDENTIFIER: Title
 
 Date: YYYY-MM-DD
 
 ## Status
 
-[Proposed | Accepted | Rejected | Deprecated | Superseded by [ADR-ACRONYM](ACRONYM-title.md)]
+[Proposed | Accepted | Rejected | Deprecated | Superseded by [ADR-IDENTIFIER](IDENTIFIER-title.md)]
 
 ## Context
 

@@ -1,4 +1,4 @@
-# ADR-NIRM: Node-ID Reminting at the Merge Boundary
+# ADR-MINT: Merge Identity for Node Transfers
 
 Date: 2026-08-25
 
@@ -6,7 +6,7 @@ Date: 2026-08-25
 
 Proposed
 
-ADR-CLMC's merge-boundary reconciliation amendment (2026-08-23) already
+ADR-LAYOUT's merge-boundary reconciliation amendment (2026-08-23) already
 carries the direction. This ADR separates the current local-import behavior
 from the future CRDT behavior so their different materialization paths and
 responsibilities are explicit. Formal sign-off remains pending.
@@ -22,7 +22,7 @@ encodes which client or historical workflow file minted it. In a single-client
 world this is harmless because the graph that mints an id is its only
 authority.
 
-The CRDT-based collaboration direction (ADR-CLMC) and the ECS store migration
+The CRDT-based collaboration direction (ADR-LAYOUT) and the ECS store migration
 (ADR-ECS) break that assumption. Two replicas can each independently mint
 node id `7` for two **different** entities. When one replica's content reaches
 the other through a future semantic-operation applier, both entities would
@@ -66,7 +66,7 @@ Concretely:
    adapter does not receive remote semantic operations and does not emit a
    CRDT operation.
 3. The **future CRDT boundary** is the semantic-operation applier described by
-   ADR-CLMC. Nodes, widgets, links, and reroutes are not yet CRDT-replicated.
+   ADR-LAYOUT. Nodes, widgets, links, and reroutes are not yet CRDT-replicated.
    When they are, the applier must reconcile concurrent identity collisions
    deterministically before calling the registration layer. The current
    `nodeShellLifecycle` loop is not that applier.
@@ -88,7 +88,7 @@ flowchart TD
 ```
 
 A future semantic-operation applier must instead derive one canonical mapping
-from the same merged operation set on every replica. ADR-CLMC requires
+from the same merged operation set on every replica. ADR-LAYOUT requires
 op-stamp ordering before registration. The concrete replacement encoding
 belongs to that applier, but it must be deterministic and collision-free; for
 example, it can retain the raw id for the winning stamp and derive an
@@ -179,12 +179,12 @@ Tag colliding entries with an epoch/namespace and reconcile lazily.
 
 ## References
 
-- ADR-CLMC — Centralized Layout Management with CRDT (merge-boundary
-  reconciliation amendment, 2026-08-23). Cite ADR-CLMC externally; this ADR
+- ADR-LAYOUT — Centralized Layout Management with CRDT (merge-boundary
+  reconciliation amendment, 2026-08-23). Cite ADR-LAYOUT externally; this ADR
   is the derivation record.
 - ADR-ECS — Entity Component System (identity and structural collision
   contracts).
-- ADR-IBSROSS — ID-Based Slot Records Own Slot State (the same
+- ADR-SLOTS — ID-Based Slot Records Own Slot State (the same
   identity-vs-structural key taxonomy, applied to slots).
 - #15720 — pending collision-contract invariant test suite (registry rejection
   and remint warning).

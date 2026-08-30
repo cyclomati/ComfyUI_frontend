@@ -1,4 +1,4 @@
-# ADR-WELLB: Widget Entities and Legacy Behavior Boundary
+# ADR-WELL: Widget Entities with a Legacy Layer
 
 Date: 2026-08-26
 
@@ -155,7 +155,7 @@ migration.
 
 This ADR narrows the widget portion of
 [ADR-ECS](ECS-entity-component-system.md). It follows
-[ADR-BRR](BRR-bound-renderer-reactivity.md) by keeping compatibility work at
+[ADR-FAR](FAR-frame-atomic-rendering.md) by keeping compatibility work at
 the registration boundary instead of adding it to renderer inner loops.
 
 Bevy's [ECS callback example](https://bevy.org/examples/ecs-entity-component-system/callbacks/)

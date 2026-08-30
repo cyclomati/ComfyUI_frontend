@@ -1,4 +1,4 @@
-# 0024. Graph Activation and Document Objects for In-App Agent Targets
+# ADR-AGENT: Graph Activation and Document Objects for In-App Agent Targets
 
 Date: 2026-08-28
 

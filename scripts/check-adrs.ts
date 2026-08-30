@@ -54,7 +54,7 @@ export const validateAdrDirectory = (directory: string): void => {
   const duplicateIds = ids.filter((id, index) => ids.indexOf(id) !== index)
   if (duplicateIds.length) {
     throw new Error(
-      `Duplicate ADR acronyms: ${[...new Set(duplicateIds)].join(', ')}`
+      `Duplicate ADR identifiers: ${[...new Set(duplicateIds)].join(', ')}`
     )
   }
 
@@ -82,7 +82,7 @@ export const validateAdrDirectory = (directory: string): void => {
   )
   if (JSON.stringify(indexRows) !== JSON.stringify(expected)) {
     throw new Error(
-      'ADR index must contain every ADR exactly once, ordered by acronym, with matching title, status, and date'
+      'ADR index must contain every ADR exactly once, ordered by identifier, with matching title, status, and date'
     )
   }
 }

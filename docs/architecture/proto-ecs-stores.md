@@ -8,7 +8,7 @@ For the full problem analysis, see [Entity Problems](entity-problems.md). For th
 
 Dedicated stores extract entity state out of class instances into focused,
 queryable registries, each owning one concern. Promoted value-widget topology is
-no longer a store; ADR-SPWLI represents it as ordinary linked `SubgraphInput`
+no longer a store; ADR-PROMOTION represents it as ordinary linked `SubgraphInput`
 state, and promoted value data lives in `WidgetValueStore` keyed by the input's
 `WidgetId`.
 
@@ -48,7 +48,7 @@ then deleted — badge rows are cheaper to derive on read than to store, so
 inputs. There is no `src/stores/nodeBadgeStore.ts`. See
 [Node Badge Store](node-badge-store.md) for the reversal.
 
-ADR-SPWLI refines promoted-widget identity: promoted value widgets are keyed by
+ADR-PROMOTION refines promoted-widget identity: promoted value widgets are keyed by
 the host boundary (`host node locator + SubgraphInput.name`), while interior
 source node/widget identity is migration and diagnostic metadata only.
 
@@ -132,7 +132,7 @@ graph LR
 
 ## 3. Linked promoted widgets and preview exposures
 
-`PromotionStore` was removed by ADR-SPWLI. Promoted value widgets are represented
+`PromotionStore` was removed by ADR-PROMOTION. Promoted value widgets are represented
 by linked `SubgraphInput`s, and display-only previews are represented by
 host-scoped `properties.previewExposures` / `PreviewExposureStore` entries.
 Legacy `properties.proxyWidgets` is load-time migration input only.
@@ -208,7 +208,7 @@ objects do not instantiate the mutation composable at module scope.
 | Aspect                           | ECS-like  | Why                                                         |
 | -------------------------------- | --------- | ----------------------------------------------------------- |
 | Position data extracted          | Yes       | Closest to the ECS `Position` component                     |
-| CRDT-ready                       | Yes       | Enables collaboration (ADR-CLMC)                            |
+| CRDT-ready                       | Yes       | Enables collaboration (ADR-LAYOUT)                          |
 | Covers multiple entity kinds     | Yes       | Nodes, groups, and reroutes in one store                    |
 | Mutation API (composable)        | Partially | System-like, but called from entities, not a system         |
 | Direct store access              | Partially | Domain objects and `graphLayoutAttachment` import the store |
@@ -276,7 +276,7 @@ Each store owns the identity scheme that fits its concern:
 `WidgetValueStore` already keys on a branded `WidgetId` string (`src/types/widgetId.ts`),
 which carries its scope and survives renames at the store layer. The remaining
 stores can adopt their own branded string keys where cross-kind safety pays off,
-without a shared entity-ID space. For promoted value widgets, ADR-SPWLI keys on
+without a shared entity-ID space. For promoted value widgets, ADR-PROMOTION keys on
 the host boundary: the input's `WidgetId` (host node locator + `SubgraphInput.name`),
 not interior source identity.
 

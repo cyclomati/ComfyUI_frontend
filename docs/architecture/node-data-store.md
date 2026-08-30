@@ -275,4 +275,4 @@ Covers node shell state, the `VueNodeData` deletion, and the
 beyond `type`/`apiNode` (`category`, `nodeData`, `description` remain on
 the class/constructor), badges, `WidgetContainer` (already owned by
 `widgetValueStore`), and command-pattern mutators (future work per
-ADR-CLMC/0008).
+ADR-LAYOUT/0008).

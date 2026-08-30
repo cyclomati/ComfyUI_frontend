@@ -1,4 +1,4 @@
-# ADR-FPUL: Fork PrimeVue UI Library
+# ADR-PRIMEVUE: Use PrimeVue Without a Fork
 
 Date: 2025-08-27
 

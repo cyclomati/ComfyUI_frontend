@@ -186,7 +186,7 @@ describe('compound undo', () => {
       // The reroute is *not* removed with the link it was on. It stays in the
       // graph, and the floating-link id it holds resolves to a real registered
       // floating link — the store migration made the preserved reroute chain
-      // authoritative instead of leaving a dangling id (see ADR-CLMC).
+      // authoritative instead of leaving a dangling id (see ADR-LAYOUT).
       const orphan = graph.reroutes.get(rerouteId)!
       expect(orphan).toBeDefined()
       expect([...orphan.linkIds]).toEqual([])
@@ -330,7 +330,7 @@ describe('compound undo', () => {
       // reroute survives validation on reload: redo and the original delete
       // now leave the same graph. (The dedicated stores made the preserved
       // chain a real floating link where it used to be a dangling id that
-      // reload validation discarded; see ADR-CLMC.)
+      // reload validation discarded; see ADR-LAYOUT.)
       expect(graph.reroutes.size).toBe(1)
       expect(
         serialisedReroutes(snapshot(graph)).map((reroute) => reroute.id)

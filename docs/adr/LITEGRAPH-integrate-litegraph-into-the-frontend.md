@@ -1,4 +1,4 @@
-# ADR-MLCF: Merge LiteGraph.js into ComfyUI Frontend
+# ADR-LITEGRAPH: Integrate LiteGraph into the Frontend
 
 Date: 2025-08-05
 

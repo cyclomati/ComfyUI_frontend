@@ -1,4 +1,4 @@
-# ADR-BRR: Bound Renderer Reactivity
+# ADR-FAR: Frame-Atomic Rendering
 
 Date: 2026-08-26
 

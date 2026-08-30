@@ -1,4 +1,4 @@
-# ADR-PMCIP: Performance Measurement and CI Policy
+# ADR-PERF: Performance Evidence and Regression Framework
 
 Date: 2026-08-26
 

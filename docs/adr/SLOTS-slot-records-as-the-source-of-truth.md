@@ -1,4 +1,4 @@
-# ADR-IBSROSS: ID-Based Slot Records Own Slot State
+# ADR-SLOTS: Slot Records as the Source of Truth
 
 Date: 2026-08-24
 

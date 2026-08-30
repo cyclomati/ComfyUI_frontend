@@ -4,7 +4,7 @@ Status: Current implementation audit
 Verified: 2026-08-20 against `13a302eadda871b939b148ecb87e3d845ceefff2`
 
 This audit maps the implementation on `feature/ecs-migration` to the principles in
-[ADR-CLMC](../../adr/CLMC-crdt-based-layout-system.md) and
+[ADR-LAYOUT](../../adr/LAYOUT-crdt-layout-intent-and-local-measurement.md) and
 [ADR-ECS](../../adr/ECS-entity-component-system.md). The ADRs remain the
 decision records; this audit neither replaces nor amends them.
 
@@ -48,7 +48,7 @@ sequencing is recorded in [ECS Migration Plan](ecs-migration-plan.md).
   imperative class callbacks.
 - Within this repository, Yjs supplies mergeable layout state and
   notifications, not a retained application operation log or network
-  transport. ADR-CLMC's amendment records removal of those unused local seams.
+  transport. ADR-LAYOUT's amendment records removal of those unused local seams.
 - [`@comfyorg/comfy-multi-player`](https://github.com/Comfy-Org/comfy-multi-player)
   separately implements a Yjs workflow document, stamped operation applier,
   and canonical workflow projection for a server-host/browser-follower model.
@@ -66,7 +66,7 @@ sequencing is recorded in [ECS Migration Plan](ecs-migration-plan.md).
 
 ## Reference records
 
-- [ADR-CLMC: Centralized Layout Management with CRDT](../../adr/CLMC-crdt-based-layout-system.md)
+- [ADR-LAYOUT: Centralized Layout Management with CRDT](../../adr/LAYOUT-crdt-layout-intent-and-local-measurement.md)
 - [ADR-ECS: Entity Component System](../../adr/ECS-entity-component-system.md)
 - [Node Data Store](../node-data-store.md)
 - [Link Topology Store](../link-topology-store.md)

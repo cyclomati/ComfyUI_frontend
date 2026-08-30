@@ -80,7 +80,7 @@ function inside a thin watch shell and writes the node's rows. Sources
 are the existing stores: `nodeDefStore`, `settingStore`,
 `colorPaletteStore`, `useNodePricing` revision refs, `widgetValueStore`,
 `linkStore` input connectivity. The pure function is the future
-command-pipeline phase body (ADR-CLMC systems ADR); only the scheduler
+command-pipeline phase body (ADR-LAYOUT systems ADR); only the scheduler
 shell changes when that lands.
 
 `useNodeBadge` / `usePriceBadge` stop pushing closures; their derivation

@@ -1,4 +1,4 @@
-# ADR-RIMVE: Remove Import Map for Vue Extensions
+# ADR-BUNDLE: Bundle Vue Dependencies in Extensions
 
 Date: 2025-12-13
 
